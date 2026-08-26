@@ -9,6 +9,9 @@
     "lint": "eslint",
     "type-check": "tsc --noEmit"
   },
+  "prisma": {
+    "seed": "node --import tsx/esm prisma/seed.ts"
+  },
   "dependencies": {
     "@prisma/client": "^7.10.0",
     "clsx": "^2.1.1",
