@@ -1,0 +1,49 @@
+// Prisma Schema blueprint for MediVault AI
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Model placeholders prepared for future implementation
+model User {
+  id            String         @id @default(cuid())
+  name          String?
+  email         String         @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  prescriptions Prescription[]
+  medicines     Medicine[]
+}
+
+model Prescription {
+  id            String     @id @default(cuid())
+  userId        String
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title         String
+  doctorName    String?
+  imageUrl      String?
+  extractedText String?
+  medicines     Medicine[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model Medicine {
+  id             String        @id @default(cuid())
+  userId         String
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  prescriptionId String?
+  prescription   Prescription? @relation(fields: [prescriptionId], references: [id], onDelete: SetNull)
+  name           String
+  dosage         String
+  frequency      String
+  instructions   String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
