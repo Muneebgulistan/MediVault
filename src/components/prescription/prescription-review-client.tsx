@@ -184,9 +184,13 @@ export function PrescriptionReviewClient({
                 <span className="text-xs font-bold text-slate-400 flex items-center gap-1.5">
                   Medication #{index + 1}
                   {showConfidence && (
-                    <span className="inline-flex items-center gap-0.5 rounded bg-teal-500/10 text-teal-400 border border-teal-500/15 px-1 py-0.25 text-[8px] font-semibold">
-                      <Sparkles className="h-2 w-2" />
-                      {confPercent}% confidence
+                    <span className={`inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[8px] font-semibold border ${
+                      confPercent < 90 
+                        ? "bg-amber-500/10 text-amber-400 border-amber-500/15" 
+                        : "bg-teal-500/10 text-teal-400 border-teal-500/15"
+                    }`}>
+                      {confPercent < 90 ? <AlertTriangle className="h-2 w-2" /> : <Sparkles className="h-2 w-2" />}
+                      {confPercent}% confidence {confPercent < 90 ? "- Verify Carefully" : ""}
                     </span>
                   )}
                 </span>

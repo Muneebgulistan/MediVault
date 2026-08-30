@@ -6,6 +6,7 @@ import { researchMedicine } from "@/lib/medicines/research";
 import { generateSchedule } from "@/lib/scheduling/engine";
 import { AdministrationRoute, VerificationStatus } from "@prisma/client";
 import { safeRevalidatePath } from "@/lib/utils/revalidate";
+import { PrescriptionReviewSchema } from "@/lib/validation/prescription-schemas";
 
 /**
  * Simulates AI/OCR extraction for an uploaded prescription.
@@ -115,6 +116,13 @@ export async function savePrescriptionReview(
   const session = await auth();
   if (!session?.user?.id) throw new Error("Unauthenticated");
 
+  // Validate incoming review payload using Zod schema
+  const parsed = PrescriptionReviewSchema.safeParse(medicines);
+  if (!parsed.success) {
+    throw new Error("Invalid review data format: " + parsed.error.message);
+  }
+  const validatedMedicines = parsed.data;
+
   // Enforce ownership
   const rx = await prisma.prescription.findFirst({
     where: { id: prescriptionId, userId: session.user.id },
@@ -129,7 +137,7 @@ export async function savePrescriptionReview(
     });
 
     // 2. Loop and resolve/create each review item
-    for (const m of medicines) {
+    for (const m of validatedMedicines) {
       // Find or create medicine in the global catalog
       let med = await tx.medicine.findFirst({
         where: { name: { equals: m.medicineName.trim(), mode: "insensitive" } },
@@ -211,7 +219,7 @@ export async function savePrescriptionReview(
 
   // 5. Query FDA research API separately in background to cache details
   // (We do this after transaction commits to keep transactions fast and avoid network blocks!)
-  for (const m of medicines) {
+  for (const m of validatedMedicines) {
     try {
       const med = await prisma.medicine.findFirst({
         where: { name: { equals: m.medicineName.trim(), mode: "insensitive" } },

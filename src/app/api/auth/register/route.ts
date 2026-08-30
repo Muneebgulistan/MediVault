@@ -3,9 +3,19 @@ import { SignUpSchema } from "@/lib/validation/auth-schemas";
 import { ApiResponseBuilder } from "@/lib/utils/api-response";
 import { handleApiError, AppError } from "@/lib/utils/error-handler";
 import { hashPassword } from "@/lib/auth/password";
+import { isRateLimited, getClientIp } from "@/lib/security/rate-limit";
 
 export async function POST(req: Request) {
   try {
+    const ip = getClientIp(req);
+    if (isRateLimited(`register:${ip}`, 5, 15 * 60 * 1000)) {
+      return ApiResponseBuilder.error(
+        "Too many registration attempts. Please try again in 15 minutes.",
+        "RATE_LIMIT_EXCEEDED",
+        429
+      );
+    }
+
     const body = await req.json();
     const parsed = SignUpSchema.safeParse(body);
 

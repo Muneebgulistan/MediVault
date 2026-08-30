@@ -4,6 +4,7 @@ import { storage } from "@/lib/storage/provider";
 import { ApiResponseBuilder } from "@/lib/utils/api-response";
 import { handleApiError, AppError } from "@/lib/utils/error-handler";
 import crypto from "crypto";
+import { isRateLimited, getClientIp } from "@/lib/security/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -47,6 +48,16 @@ export async function POST(req: Request) {
   try {
     // 1. Authenticate user
     const userId = await requireAuth();
+
+    // Rate Limiting: max 20 prescription uploads per hour per user/IP address
+    const ip = getClientIp(req);
+    if (isRateLimited(`upload:${userId}:${ip}`, 20, 60 * 60 * 1000)) {
+      return ApiResponseBuilder.error(
+        "Too many upload attempts. Please try again in an hour.",
+        "RATE_LIMIT_EXCEEDED",
+        429
+      );
+    }
 
     // 2. Parse request formData
     const formData = await req.formData();

@@ -33,8 +33,18 @@ export class ValidationError extends AppError {
   }
 }
 
+function sanitizeError(err: unknown): string {
+  if (err instanceof Error) {
+    let sanitized = err.stack || err.message;
+    // Strip postgresql credentials in connection URIs
+    sanitized = sanitized.replace(/postgresql:\/\/[^@\s]+@/g, "postgresql://[REDACTED_AUTH]@");
+    return sanitized;
+  }
+  return String(err);
+}
+
 export function handleApiError(error: unknown) {
-  console.error("API Error caught:", error);
+  console.error("API Error caught:", sanitizeError(error));
 
   if (error instanceof AppError) {
     return ApiResponseBuilder.error(error.message, error.code, error.statusCode, error.details);
