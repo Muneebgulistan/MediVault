@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth/config";
 import { generatePrescriptionSchedules } from "@/app/actions/schedule";
+import { deletePrescription } from "@/app/actions/prescription";
 import { PrescriptionReviewClient } from "@/components/prescription/prescription-review-client";
 import { requirePrescriptionOwnership } from "@/lib/auth/authorization";
 import { prisma } from "@/lib/db/prisma";
@@ -78,6 +79,14 @@ export default async function PrescriptionDetailPage({ params }: PrescriptionDet
                 </button>
               </form>
             )}
+            <form action={deletePrescription.bind(null, rx.id)}>
+              <button
+                type="submit"
+                className="rounded-lg bg-red-950/40 hover:bg-red-900 border border-red-500/20 text-red-400 hover:text-white text-xs font-semibold py-1.5 px-3 transition shadow"
+              >
+                Delete
+              </button>
+            </form>
           </div>
         </div>
       </div>

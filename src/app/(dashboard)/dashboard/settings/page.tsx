@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth/config";
-import { Shield, Bell, Eye } from "lucide-react";
+import { Shield, Bell, Eye, Trash2 } from "lucide-react";
+import { deleteAccount } from "@/app/actions/user";
 
 export const dynamic = "force-dynamic";
 
@@ -51,7 +52,7 @@ export default async function SettingsPage() {
           </div>
         </div>
 
-        <div className="flex items-start gap-4 pt-6">
+        <div className="flex items-start gap-4 py-6">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/15">
             <Eye className="h-5 w-5" />
           </div>
@@ -64,6 +65,27 @@ export default async function SettingsPage() {
               <span>Default Route:</span>
               <strong className="text-slate-300">Oral (Tablet/Capsule)</strong>
             </div>
+          </div>
+        </div>
+
+        {/* Danger Zone: Account Deletion */}
+        <div className="flex items-start gap-4 pt-6 border-t border-red-500/20 bg-red-500/5 -mx-6 -mb-6 p-6 rounded-b-2xl">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/10 text-red-400 border border-red-500/15">
+            <Trash2 className="h-5 w-5" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-sm font-semibold text-red-400">Danger Zone: Delete Account</h3>
+            <p className="text-xs text-slate-400 mt-1">
+              Permanently delete your profile, prescriptions, files, and daily timetables. This action is irreversible.
+            </p>
+            <form action={deleteAccount} className="mt-4">
+              <button
+                type="submit"
+                className="rounded-lg bg-red-600 hover:bg-red-700 text-white px-4 py-2 text-xs font-bold transition shadow-sm"
+              >
+                Permanently Delete My Account
+              </button>
+            </form>
           </div>
         </div>
       </div>
