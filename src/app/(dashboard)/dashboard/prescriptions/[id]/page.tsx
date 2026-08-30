@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth/config";
+import { generatePrescriptionSchedules } from "@/app/actions/schedule";
 import { requirePrescriptionOwnership } from "@/lib/auth/authorization";
 import { prisma } from "@/lib/db/prisma";
 import Link from "next/link";
@@ -47,22 +48,36 @@ export default async function PrescriptionDetailPage({ params }: PrescriptionDet
           <ArrowLeft className="h-3.5 w-3.5" /> Back to list
         </Link>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-2xl font-bold tracking-tight text-white">{rx.title}</h1>
-          <span
-            className={`self-start sm:self-center rounded-full px-3 py-1 text-xs font-semibold tracking-wide uppercase ${
-              rx.status === "CONFIRMED"
-                ? "bg-teal-500/10 text-teal-400 border border-teal-500/25"
-                : rx.status === "REVIEW_REQUIRED"
-                ? "bg-orange-500/10 text-orange-400 border border-orange-500/25"
-                : rx.status === "PROCESSING"
-                ? "bg-yellow-500/10 text-yellow-400 border border-yellow-500/25"
-                : rx.status === "FAILED"
-                ? "bg-red-500/10 text-red-400 border border-red-500/25"
-                : "bg-slate-800 text-slate-400"
-            }`}
-          >
-            {rx.status.replace(/_/g, " ")}
-          </span>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight text-white">{rx.title}</h1>
+          </div>
+          <div className="flex items-center gap-3 self-start sm:self-center">
+            <span
+              className={`rounded-full px-3 py-1 text-xs font-semibold tracking-wide uppercase ${
+                rx.status === "CONFIRMED"
+                  ? "bg-teal-500/10 text-teal-400 border border-teal-500/25"
+                  : rx.status === "REVIEW_REQUIRED"
+                  ? "bg-orange-500/10 text-orange-400 border border-orange-500/25"
+                  : rx.status === "PROCESSING"
+                  ? "bg-yellow-500/10 text-yellow-400 border border-yellow-500/25"
+                  : rx.status === "FAILED"
+                  ? "bg-red-500/10 text-red-400 border border-red-500/25"
+                  : "bg-slate-800 text-slate-400"
+              }`}
+            >
+              {rx.status.replace(/_/g, " ")}
+            </span>
+            {rx.status !== "CONFIRMED" && (
+              <form action={generatePrescriptionSchedules.bind(null, rx.id)}>
+                <button
+                  type="submit"
+                  className="rounded-lg bg-teal-500 hover:bg-teal-400 text-slate-950 text-xs font-semibold py-1.5 px-3 transition shadow"
+                >
+                  Confirm & Generate Schedule
+                </button>
+              </form>
+            )}
+          </div>
         </div>
       </div>
 

@@ -183,9 +183,29 @@ model MedicineSchedule {
   isActive               Boolean               @default(true)
   createdAt              DateTime              @default(now())
   updatedAt              DateTime              @updatedAt
+  logs                   MedicineLog[]
 
   @@index([userId])
   @@index([medicineId])
   @@index([isActive])
   @@index([startDate, endDate])
+}
+
+model MedicineLog {
+  id         String           @id @default(cuid())
+  scheduleId String
+  schedule   MedicineSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  status     LogStatus
+  loggedAt   DateTime         @default(now())
+  takenDate  String
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  @@index([scheduleId])
+  @@index([takenDate])
+}
+
+enum LogStatus {
+  TAKEN
+  SKIPPED
 }
