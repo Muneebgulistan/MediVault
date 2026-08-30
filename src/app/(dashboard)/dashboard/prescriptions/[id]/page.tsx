@@ -50,10 +50,14 @@ export default async function PrescriptionDetailPage({ params }: PrescriptionDet
           <h1 className="text-2xl font-bold tracking-tight text-white">{rx.title}</h1>
           <span
             className={`self-start sm:self-center rounded-full px-3 py-1 text-xs font-semibold tracking-wide uppercase ${
-              rx.status === "VERIFIED"
+              rx.status === "CONFIRMED"
                 ? "bg-teal-500/10 text-teal-400 border border-teal-500/25"
                 : rx.status === "REVIEW_REQUIRED"
                 ? "bg-orange-500/10 text-orange-400 border border-orange-500/25"
+                : rx.status === "PROCESSING"
+                ? "bg-yellow-500/10 text-yellow-400 border border-yellow-500/25"
+                : rx.status === "FAILED"
+                ? "bg-red-500/10 text-red-400 border border-red-500/25"
                 : "bg-slate-800 text-slate-400"
             }`}
           >
@@ -170,22 +174,40 @@ export default async function PrescriptionDetailPage({ params }: PrescriptionDet
               <p className="text-xs text-slate-500 py-4 text-center">No images or document files attached.</p>
             ) : (
               <div className="space-y-3">
-                {rx.files.map((f) => (
-                  <div
-                    key={f.id}
-                    className="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-950/40 p-3 hover:border-slate-700 transition"
-                  >
-                    <FileText className="h-6 w-6 text-teal-400 shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-semibold text-slate-300 truncate">
-                        {f.originalFilename}
-                      </p>
-                      <p className="text-[10px] text-slate-500 mt-0.5">
-                        {(f.fileSize / 1024).toFixed(1)} KB
-                      </p>
+                {rx.files.map((f) => {
+                  const secureUrl = `/api/files/${rx.id}/${f.id}`;
+                  const isImage = f.mimeType.startsWith("image/");
+                  return (
+                    <div key={f.id} className="space-y-2">
+                      <a
+                        href={secureUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-950/40 p-3 hover:border-slate-700 transition group"
+                      >
+                        <FileText className="h-6 w-6 text-teal-400 shrink-0 group-hover:text-teal-300" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-semibold text-slate-300 group-hover:text-slate-100 truncate">
+                            {f.originalFilename}
+                          </p>
+                          <p className="text-[10px] text-slate-500 mt-0.5">
+                            {(f.fileSize / 1024).toFixed(1)} KB • Click to open
+                          </p>
+                        </div>
+                      </a>
+                      {isImage && (
+                        <div className="rounded-xl overflow-hidden border border-slate-800/80 bg-slate-950/20 max-h-48 flex items-center justify-center p-2">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={secureUrl}
+                            alt={f.originalFilename}
+                            className="max-h-44 object-contain rounded-lg shadow"
+                          />
+                        </div>
+                      )}
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>

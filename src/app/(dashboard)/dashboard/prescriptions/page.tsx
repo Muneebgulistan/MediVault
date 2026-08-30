@@ -67,10 +67,14 @@ export default async function PrescriptionsPage() {
                   <h3 className="font-semibold text-slate-100 line-clamp-1 text-sm">{rx.title}</h3>
                   <span
                     className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold tracking-wide uppercase shrink-0 ${
-                      rx.status === "VERIFIED"
+                      rx.status === "CONFIRMED"
                         ? "bg-teal-500/10 text-teal-400 border border-teal-500/25"
                         : rx.status === "REVIEW_REQUIRED"
                         ? "bg-orange-500/10 text-orange-400 border border-orange-500/25"
+                        : rx.status === "PROCESSING"
+                        ? "bg-yellow-500/10 text-yellow-400 border border-yellow-500/25"
+                        : rx.status === "FAILED"
+                        ? "bg-red-500/10 text-red-400 border border-red-500/25"
                         : "bg-slate-800 text-slate-400"
                     }`}
                   >

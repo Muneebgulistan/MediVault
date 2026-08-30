@@ -1,10 +1,9 @@
 export type PrescriptionStatus =
-  | "DRAFT"
+  | "UPLOADED"
   | "PROCESSING"
-  | "EXTRACTED"
   | "REVIEW_REQUIRED"
-  | "VERIFIED"
-  | "ARCHIVED";
+  | "CONFIRMED"
+  | "FAILED";
 
 export type VerificationStatus =
   | "AI_EXTRACTED"

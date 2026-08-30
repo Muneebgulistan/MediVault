@@ -216,10 +216,14 @@ export default async function DashboardPage() {
                     <div className="flex items-center gap-3 self-start sm:self-center">
                       <span
                         className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                          rx.status === "VERIFIED"
+                          rx.status === "CONFIRMED"
                             ? "bg-teal-500/10 text-teal-400"
                             : rx.status === "REVIEW_REQUIRED"
                             ? "bg-orange-500/10 text-orange-400"
+                            : rx.status === "PROCESSING"
+                            ? "bg-yellow-500/10 text-yellow-400"
+                            : rx.status === "FAILED"
+                            ? "bg-red-500/10 text-red-400"
                             : "bg-blue-500/10 text-blue-400"
                         }`}
                       >

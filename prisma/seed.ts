@@ -1,6 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "../src/lib/db/prisma";
 
 async function main() {
   console.log("🌱 Seeding database...");
@@ -64,7 +62,7 @@ async function main() {
       doctorName: "Dr. Sarah Jenkins, MD",
       prescriptionDate: new Date(),
       notes: "Take antibiotic with food and complete full 7-day course.",
-      status: "VERIFIED",
+      status: "CONFIRMED",
       files: {
         create: [
           {
