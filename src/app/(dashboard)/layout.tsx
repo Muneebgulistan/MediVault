@@ -9,10 +9,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
   }
 
   // Pass necessary user information down to DashboardNav Client Component
+  const sessionUser = session.user as { name?: string | null; email?: string | null; image?: string | null };
   const user = {
-    name: session.user.name,
-    email: session.user.email,
-    image: session.user.image,
+    name: sessionUser.name,
+    email: sessionUser.email,
+    image: sessionUser.image,
   };
 
   return (

@@ -13,6 +13,17 @@ export async function researchMedicine(
   medicineId: string,
   medicineName: string
 ): Promise<MedicineResearchResult> {
+  if (process.env.MOCK_AUTH === "true") {
+    return {
+      identified: true,
+      medicineName,
+      brandNames: [],
+      sourceName: "Mocked",
+      sourceUrl: "https://mock.fda.gov",
+      retrievedAt: new Date(),
+    };
+  }
+
   // 1. Check local database cache
   const medicine = await prisma.medicine.findUnique({
     where: { id: medicineId },

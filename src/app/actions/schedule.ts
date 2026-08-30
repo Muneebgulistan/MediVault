@@ -3,7 +3,7 @@
 import { auth } from "@/lib/auth/config";
 import { prisma } from "@/lib/db/prisma";
 import { generateSchedule } from "@/lib/scheduling/engine";
-import { revalidatePath } from "next/cache";
+import { safeRevalidatePath } from "@/lib/utils/revalidate";
 import { LogStatus } from "@prisma/client";
 
 /**
@@ -114,8 +114,8 @@ export async function generatePrescriptionSchedules(prescriptionId: string) {
     data: { status: "CONFIRMED" },
   });
 
-  revalidatePath("/dashboard/schedule");
-  revalidatePath("/dashboard/prescriptions");
+  safeRevalidatePath("/dashboard/schedule");
+  safeRevalidatePath("/dashboard/prescriptions");
 
 }
 
@@ -156,7 +156,7 @@ export async function logMedicationTake(
     });
   }
 
-  revalidatePath("/dashboard/schedule");
+  safeRevalidatePath("/dashboard/schedule");
   return { success: true };
 }
 
@@ -171,7 +171,7 @@ export async function toggleScheduleActive(scheduleId: string, isActive: boolean
     data: { isActive },
   });
 
-  revalidatePath("/dashboard/schedule");
+  safeRevalidatePath("/dashboard/schedule");
   return { success: true };
 }
 
@@ -192,7 +192,7 @@ export async function updateScheduleTime(scheduleId: string, newTime: string) {
     data: { scheduledTime: newTime },
   });
 
-  revalidatePath("/dashboard/schedule");
+  safeRevalidatePath("/dashboard/schedule");
   return { success: true };
 }
 
@@ -233,6 +233,6 @@ export async function addCustomSchedule(data: {
     },
   });
 
-  revalidatePath("/dashboard/schedule");
+  safeRevalidatePath("/dashboard/schedule");
   return { success: true };
 }

@@ -62,7 +62,7 @@ export default async function DashboardPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-white">
-            Welcome back, {session.user.name?.split(" ")[0] ?? "there"}
+            Welcome back, {(session.user as { name?: string | null }).name?.split(" ")[0] ?? "there"}
           </h1>
           <p className="text-sm text-slate-400 mt-1">
             Here is a summary of your active prescriptions, medication schedules, and upcoming doses.

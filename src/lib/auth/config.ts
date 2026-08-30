@@ -5,7 +5,7 @@ import { SignInSchema } from "@/lib/validation/auth-schemas";
 import { verifyPassword } from "@/lib/auth/password";
 import { authConfig } from "./auth.config";
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+const { handlers, auth: rawAuth, signIn, signOut } = NextAuth({
   ...authConfig,
   providers: [
     Credentials({
@@ -40,3 +40,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
 });
+
+export { handlers, signIn, signOut };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const auth = (async (...args: any[]) => {
+  if (process.env.MOCK_AUTH === "true") {
+    return { user: { id: "test-user-id" } };
+  }
+  // @ts-ignore
+  return rawAuth(...args);
+}) as typeof rawAuth;

@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth/config";
 import { generatePrescriptionSchedules } from "@/app/actions/schedule";
+import { PrescriptionReviewClient } from "@/components/prescription/prescription-review-client";
 import { requirePrescriptionOwnership } from "@/lib/auth/authorization";
 import { prisma } from "@/lib/db/prisma";
 import Link from "next/link";
@@ -117,7 +118,22 @@ export default async function PrescriptionDetailPage({ params }: PrescriptionDet
               Medicines & Dosage Instructions
             </h3>
 
-            {rx.medicines.length === 0 ? (
+            {rx.status !== "CONFIRMED" ? (
+              <PrescriptionReviewClient
+                prescriptionId={rx.id}
+                initialStatus={rx.status}
+                initialMedicines={rx.medicines.map((m) => ({
+                  id: m.id,
+                  medicineName: m.medicine.name,
+                  dosage: m.dosage,
+                  frequency: m.frequency,
+                  route: m.route,
+                  duration: m.duration || "",
+                  instructions: m.instructions || "",
+                  confidence: m.confidence || undefined,
+                }))}
+              />
+            ) : rx.medicines.length === 0 ? (
               <div className="py-8 text-center text-slate-500">
                 <AlertTriangle className="mx-auto mb-3 h-8 w-8 opacity-40" />
                 <p className="text-xs">No medications extracted from this prescription yet.</p>
