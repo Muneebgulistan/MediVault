@@ -1,4 +1,4 @@
-import { researchMedicine } from "../src/lib/medicines/research";
+import { researchMedicine, OpenFdaProvider } from "../src/lib/medicines/research";
 import { prisma } from "../src/lib/db/prisma";
 
 // Mock database store
@@ -146,6 +146,18 @@ async function runMedicineTests() {
   } finally {
     global.fetch = originalFetch;
   }
+
+  // Test 5: Provider Abstraction Instantiation
+  console.log("\n🧪 Test 5: Provider Abstraction Instantiation");
+  const fdaProvider = new OpenFdaProvider();
+  console.log(`- Provider Name: ${fdaProvider.name}`);
+  console.log(`- Provider URL: ${fdaProvider.url}`);
+  const fdaInfo = await fdaProvider.research("Metformin");
+  console.log(`- Provider Research Found: ${!!fdaInfo}`);
+  if (fdaProvider.name !== "openFDA" || !fdaInfo) {
+    throw new Error("Test 5 failed: OpenFdaProvider failed direct lookup test");
+  }
+  console.log("✅ PASS");
 
   console.log("\n🎉 All Mocked Medicine Research & Verification layer tests passed successfully!");
 }

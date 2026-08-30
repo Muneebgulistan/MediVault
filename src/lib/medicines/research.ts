@@ -1,52 +1,13 @@
 import { prisma } from "@/lib/db/prisma";
-
-export interface MedicineResearchResult {
-  identified: boolean;
-  medicineName: string;
-  genericName?: string | null;
-  brandNames: string[];
-  category?: string | null;
-  description?: string | null;
-  indications?: string | null;
-  sideEffects?: string | null;
-  warnings?: string | null;
-  interactions?: string | null;
-  storageInfo?: string | null;
-  sourceName?: string | null;
-  sourceUrl?: string | null;
-  retrievedAt?: Date | null;
-}
+import { MedicineResearchResult } from "./provider";
+import { OpenFdaProvider } from "./openfda-provider";
 
 const CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 Days Cache TTL
-
-function extractField(field: unknown): string | null {
-  if (!field) return null;
-  if (Array.isArray(field)) {
-    return field.join("\n");
-  }
-  return String(field);
-}
-
-interface OpenFdaLabelResult {
-  openfda?: {
-    generic_name?: string[];
-    brand_name?: string[];
-    route?: string[];
-  };
-  description?: string[];
-  information_for_patients?: string[];
-  indications_and_usage?: string[];
-  adverse_reactions?: string[];
-  warnings?: string[];
-  warnings_and_cautions?: string[];
-  drug_interactions?: string[];
-  storage_and_handling?: string[];
-  how_supplied?: string[];
-}
+const primaryProvider = new OpenFdaProvider();
 
 /**
- * Researches a medicine using openFDA API with caching in the local database.
- * Enforces rate limiting fallbacks and handles errors gracefully.
+ * Researches a medicine using the OpenFdaProvider with database caching.
+ * Resolves cache matches, API errors, and rate limits.
  */
 export async function researchMedicine(
   medicineId: string,
@@ -62,7 +23,6 @@ export async function researchMedicine(
       medicine.retrievedAt &&
       Date.now() - medicine.retrievedAt.getTime() < CACHE_TTL_MS;
 
-    // Return cached results if valid and identified previously
     if (hasValidCache && medicine.sourceName) {
       return {
         identified: true,
@@ -83,17 +43,12 @@ export async function researchMedicine(
     }
   }
 
-  // 2. Fetch from openFDA label endpoint
-  const query = encodeURIComponent(medicineName);
-  const url = `https://api.fda.gov/drug/label.json?search=openfda.generic_name:"${query}"+OR+openfda.brand_name:"${query}"&limit=1`;
-
+  // 2. Query the primary provider
   try {
-    const response = await fetch(url, {
-      signal: AbortSignal.timeout(10000), // 10s API timeout
-    });
+    const info = await primaryProvider.research(medicineName);
 
-    if (response.status === 404) {
-      // Medicine not found in openFDA
+    if (!info) {
+      // Medicine not identified by provider
       return {
         identified: false,
         medicineName,
@@ -101,54 +56,23 @@ export async function researchMedicine(
       };
     }
 
-    if (!response.ok) {
-      throw new Error(`HTTP error ${response.status}`);
-    }
-
-    const data = (await response.json()) as { results?: OpenFdaLabelResult[] };
-    const result = data?.results?.[0];
-
-    if (!result) {
-      return {
-        identified: false,
-        medicineName,
-        brandNames: [],
-      };
-    }
-
-    // 3. Extract and sanitize fields
-    const genericName = extractField(result.openfda?.generic_name) || medicineName;
-    const brandNames = Array.isArray(result.openfda?.brand_name)
-      ? (result.openfda.brand_name as string[])
-      : [];
-    const category = extractField(result.openfda?.route) || "Medication";
-    const description =
-      extractField(result.description) ||
-      extractField(result.information_for_patients) ||
-      "No description available.";
-    const indications = extractField(result.indications_and_usage);
-    const sideEffects = extractField(result.adverse_reactions);
-    const warnings = extractField(result.warnings) || extractField(result.warnings_and_cautions);
-    const interactions = extractField(result.drug_interactions);
-    const storageInfo = extractField(result.storage_and_handling) || extractField(result.how_supplied);
-
-    const sourceName = "openFDA";
-    const sourceUrl = "https://open.fda.gov";
+    const sourceName = primaryProvider.name;
+    const sourceUrl = primaryProvider.url;
     const retrievedAt = new Date();
 
-    // 4. Cache in the database
+    // 3. Save cache to database
     await prisma.medicine.update({
       where: { id: medicineId },
       data: {
-        genericName,
-        brandNames,
-        category,
-        description,
-        sideEffects,
-        interactions,
-        warnings,
-        indications,
-        storageInfo,
+        genericName: info.genericName,
+        brandNames: info.brandNames || [],
+        category: info.category,
+        description: info.description,
+        sideEffects: info.sideEffects,
+        interactions: info.interactions,
+        warnings: info.warnings,
+        indications: info.indications,
+        storageInfo: info.storageInfo,
         sourceName,
         sourceUrl,
         retrievedAt,
@@ -158,22 +82,22 @@ export async function researchMedicine(
     return {
       identified: true,
       medicineName,
-      genericName,
-      brandNames,
-      category,
-      description,
-      indications,
-      sideEffects,
-      warnings,
-      interactions,
-      storageInfo,
+      genericName: info.genericName,
+      brandNames: info.brandNames || [],
+      category: info.category,
+      description: info.description,
+      indications: info.indications,
+      sideEffects: info.sideEffects,
+      warnings: info.warnings,
+      interactions: info.interactions,
+      storageInfo: info.storageInfo,
       sourceName,
       sourceUrl,
       retrievedAt,
     };
   } catch (error) {
-    console.error(`[openFDA API Error] Failed researching ${medicineName}:`, error);
-    
+    console.error(`[Medicine Research Error] Failed to research "${medicineName}":`, error);
+
     // Fall back to database values if available, even if cache is expired
     if (medicine && medicine.sourceName) {
       return {
@@ -194,7 +118,7 @@ export async function researchMedicine(
       };
     }
 
-    // Otherwise, return identified: false to trigger fallback advice
+    // Otherwise, return identified: false to trigger user-facing verification warning
     return {
       identified: false,
       medicineName,
@@ -202,3 +126,4 @@ export async function researchMedicine(
     };
   }
 }
+export { OpenFdaProvider };
