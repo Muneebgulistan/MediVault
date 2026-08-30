@@ -2,7 +2,8 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth/config";
 import { prisma } from "@/lib/db/prisma";
 import { EmptyState } from "@/components/ui/empty-state";
-import { Pill, Activity, ExternalLink } from "lucide-react";
+import { Pill, Activity, ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -72,15 +73,12 @@ export default async function MedicinesPage() {
                   <Activity className="h-3.5 w-3.5 text-teal-400" />
                   {med.category ?? "Medication"}
                 </span>
-                {/* Search link mockup */}
-                <a
-                  href={`https://pubchem.ncbi.nlm.nih.gov/#query=${encodeURIComponent(med.name)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  href={`/dashboard/medicines/${med.id}`}
                   className="inline-flex items-center gap-1 font-semibold text-teal-400 hover:text-teal-300 transition"
                 >
-                  Research <ExternalLink className="h-3 w-3" />
-                </a>
+                  Research & Verify <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
               </div>
             </div>
           ))}

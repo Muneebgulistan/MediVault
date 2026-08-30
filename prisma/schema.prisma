@@ -129,6 +129,12 @@ model Medicine {
   description           String?
   sideEffects           String?
   interactions          String?
+  warnings              String?
+  indications           String?
+  storageInfo           String?
+  sourceName            String?
+  sourceUrl             String?
+  retrievedAt           DateTime?
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
   prescriptionMedicines PrescriptionMedicine[]
