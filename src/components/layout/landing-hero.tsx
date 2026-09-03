@@ -1,5 +1,6 @@
 import React from "react";
-import { Pill, Shield, Sparkles, Clock, FileText, Search } from "lucide-react";
+import Link from "next/link";
+import { Pill, Shield, Sparkles, Clock, FileText, Search, LogIn } from "lucide-react";
 
 export function LandingHero() {
   return (
@@ -20,9 +21,16 @@ export function LandingHero() {
             </span>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20">
-              v0.1.0 Architecture Prepared
+            <span className="hidden sm:inline text-xs font-semibold px-3 py-1 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20">
+              v0.1.0
             </span>
+            <Link
+              href="/auth/signin"
+              className="inline-flex items-center gap-2 rounded-lg bg-teal-500 hover:bg-teal-400 text-slate-950 text-sm font-semibold px-4 py-2 transition shadow-lg shadow-teal-500/20"
+            >
+              <LogIn className="h-4 w-4" />
+              Sign In
+            </Link>
           </div>
         </div>
       </header>
