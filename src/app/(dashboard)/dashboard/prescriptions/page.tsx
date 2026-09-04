@@ -31,7 +31,7 @@ export default async function PrescriptionsPage() {
           </p>
         </div>
         <Link
-          href="/dashboard/dashboard"
+          href="/dashboard"
           className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-teal-500 hover:bg-teal-400 text-slate-950 font-semibold px-4 py-2.5 text-sm transition"
         >
           <Plus className="h-4 w-4" /> Upload New
@@ -47,7 +47,7 @@ export default async function PrescriptionsPage() {
             description="Upload prescription photos or PDF reports to organize medications and timelines automatically."
             action={
               <Link
-                href="/dashboard/dashboard"
+                href="/dashboard"
                 className="inline-flex items-center gap-1.5 rounded-lg bg-teal-500 hover:bg-teal-400 text-slate-950 font-semibold px-4 py-2 text-xs transition"
               >
                 Upload Prescription

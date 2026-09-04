@@ -25,7 +25,7 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { label: "Dashboard", href: "/dashboard/dashboard", icon: LayoutDashboard },
+  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { label: "Prescriptions", href: "/dashboard/prescriptions", icon: FileText },
   { label: "Medicines", href: "/dashboard/medicines", icon: Pill },
   { label: "Schedule", href: "/dashboard/schedule", icon: Calendar },
@@ -85,10 +85,10 @@ export function DashboardNav({ user }: DashboardNavProps) {
         <nav className="flex-1 space-y-1 px-4 py-6">
           {navItems.map((item) => {
             const Icon = item.icon;
-            // Handle both exact match and matching sub-routes of dashboard
             const isActive =
-              pathname === item.href ||
-              (item.href === "/dashboard/dashboard" && pathname === "/dashboard");
+              item.href === "/dashboard"
+                ? pathname === "/dashboard"
+                : pathname.startsWith(item.href);
             return (
               <Link
                 key={item.href}
@@ -155,9 +155,10 @@ export function DashboardNav({ user }: DashboardNavProps) {
             <nav className="flex-1 space-y-1">
               {navItems.map((item) => {
                 const Icon = item.icon;
-                const isActive =
-                  pathname === item.href ||
-                  (item.href === "/dashboard/dashboard" && pathname === "/dashboard");
+                  const isActive =
+                    item.href === "/dashboard"
+                      ? pathname === "/dashboard"
+                      : pathname.startsWith(item.href);
                 return (
                   <Link
                     key={item.href}
