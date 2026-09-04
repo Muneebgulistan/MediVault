@@ -1,6 +1,8 @@
 import type { NextAuthConfig } from "next-auth";
 
 export const authConfig = {
+  trustHost: true,
+  basePath: "/api/auth",
   providers: [], // Configured in full config file
   session: {
     strategy: "jwt",

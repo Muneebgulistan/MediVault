@@ -7,6 +7,8 @@ import { authConfig } from "./auth.config";
 
 const { handlers, auth: rawAuth, signIn, signOut } = NextAuth({
   ...authConfig,
+  trustHost: true,
+  basePath: "/api/auth",
   providers: [
     Credentials({
       name: "credentials",
