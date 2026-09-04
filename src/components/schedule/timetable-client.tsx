@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import React, { useState, useTransition } from "react";
 import {
   logMedicationTake,
   toggleScheduleActive,
@@ -16,6 +16,7 @@ import {
   Check,
   AlertCircle,
   FileText,
+  Sparkles,
 } from "lucide-react";
 
 interface ScheduleWithDetails {
@@ -51,7 +52,6 @@ export function TimetableClient({ initialSchedules, todayStr }: TimetableClientP
     startTransition(async () => {
       try {
         await logMedicationTake(scheduleId, todayStr, status);
-        // Optimistic UI update
         setSchedules((prev) =>
           prev.map((s) => {
             if (s.id === scheduleId) {
@@ -61,7 +61,7 @@ export function TimetableClient({ initialSchedules, todayStr }: TimetableClientP
           })
         );
       } catch {
-        setErrorMsg("Failed to update status.");
+        setErrorMsg("Failed to update dose status.");
       }
     });
   };
@@ -80,7 +80,7 @@ export function TimetableClient({ initialSchedules, todayStr }: TimetableClientP
           })
         );
       } catch {
-        setErrorMsg("Failed to update schedule status.");
+        setErrorMsg("Failed to update regimen active status.");
       }
     });
   };
@@ -109,7 +109,7 @@ export function TimetableClient({ initialSchedules, todayStr }: TimetableClientP
     });
   };
 
-  // Sort: Chronological time slots, with "As Needed" at the bottom
+  // Sort: Chronological time slots
   const sortedSchedules = [...schedules].sort((a, b) => {
     if (a.scheduledTime === "As Needed") return 1;
     if (b.scheduledTime === "As Needed") return -1;
@@ -117,16 +117,16 @@ export function TimetableClient({ initialSchedules, todayStr }: TimetableClientP
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {errorMsg && (
-        <div className="rounded-lg border border-red-500/20 bg-red-500/5 px-4 py-3 text-xs text-red-400 flex items-center gap-2">
-          <AlertCircle className="h-4 w-4 shrink-0" />
+        <div className="rounded-2xl border border-red-500/30 bg-red-950/20 p-4 text-xs text-red-300 flex items-center gap-2.5">
+          <AlertCircle className="h-4 w-4 shrink-0 text-red-400" />
           <span>{errorMsg}</span>
         </div>
       )}
 
-      {/* TIMETABLE LAYOUT */}
-      <div className="divide-y divide-slate-800 border-t border-b border-slate-800/80">
+      {/* Timetable List */}
+      <div className="space-y-3">
         {sortedSchedules.map((item) => {
           const todayLog = item.logs[0];
           const isTaken = todayLog?.status === "TAKEN";
@@ -136,17 +136,26 @@ export function TimetableClient({ initialSchedules, todayStr }: TimetableClientP
           return (
             <div
               key={item.id}
-              className={`py-5 flex flex-col md:flex-row md:items-center justify-between gap-4 transition ${
-                !item.isActive ? "opacity-45" : ""
+              className={`rounded-2xl border p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-200 ${
+                !item.isActive
+                  ? "border-slate-800/40 bg-slate-950/30 opacity-50"
+                  : isTaken
+                  ? "border-teal-500/30 bg-teal-950/10 shadow-sm"
+                  : isSkipped
+                  ? "border-red-500/20 bg-red-950/10 opacity-70"
+                  : "border-slate-800/80 bg-slate-950/60 hover:border-slate-700"
               }`}
             >
-              {/* Left Column: Time & Badge Info */}
+              {/* Left Column: Time & Medicine Details */}
               <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-800 border border-slate-700/80 text-slate-400">
-                  <Clock className="h-5 w-5" />
+                {/* Time Badge */}
+                <div className="flex h-12 w-16 shrink-0 flex-col items-center justify-center rounded-xl bg-slate-900 border border-slate-800 text-teal-400 font-mono font-bold text-xs shadow-inner">
+                  <Clock className="h-3.5 w-3.5 mb-0.5 text-teal-400" />
+                  <span>{item.scheduledTime}</span>
                 </div>
-                <div>
-                  <div className="flex items-center gap-2">
+
+                <div className="space-y-1">
+                  <div className="flex flex-wrap items-center gap-2">
                     {isEdited ? (
                       <div className="flex items-center gap-2">
                         <input
@@ -154,48 +163,59 @@ export function TimetableClient({ initialSchedules, todayStr }: TimetableClientP
                           value={editTime}
                           onChange={(e) => setEditTime(e.target.value)}
                           placeholder="e.g. 08:30"
-                          className="w-20 rounded bg-slate-900 border border-slate-700 text-xs px-2 py-1 text-slate-100 focus:outline-none focus:border-teal-500"
+                          className="w-24 rounded-lg bg-slate-900 border border-slate-700 text-xs px-2.5 py-1 text-white focus:outline-none focus:border-teal-500 font-mono"
                         />
                         <button
                           onClick={() => handleSaveTime(item.id)}
-                          className="rounded bg-teal-500 hover:bg-teal-400 p-1 text-slate-950 transition"
+                          className="rounded-lg bg-teal-500 hover:bg-teal-400 p-1.5 text-slate-950 transition"
+                          title="Save time"
                         >
-                          <Check className="h-3.5 w-3.5" />
+                          <Check className="h-3.5 w-3.5 stroke-[2.5]" />
                         </button>
                       </div>
                     ) : (
-                      <span className="text-base font-bold text-slate-200">
-                        {item.scheduledTime}
-                      </span>
+                      <h3 className="font-bold text-white text-base">
+                        {item.medicine.name}
+                      </h3>
                     )}
 
-                    {/* Prescription generation indicator badge */}
                     {item.prescriptionMedicineId && (
-                      <span className="rounded bg-teal-500/10 text-teal-400 border border-teal-500/15 px-1.5 py-0.5 text-[9px] font-semibold flex items-center gap-1">
+                      <span className="rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider flex items-center gap-1">
                         <FileText className="h-2.5 w-2.5" />
                         Prescribed
                       </span>
                     )}
 
-                    {/* Inactive badge */}
                     {!item.isActive && (
-                      <span className="rounded bg-slate-800 text-slate-400 border border-slate-700/85 px-1.5 py-0.5 text-[9px] font-medium">
+                      <span className="rounded-full bg-slate-800 text-slate-400 border border-slate-700 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider">
                         Paused
+                      </span>
+                    )}
+
+                    {isTaken && (
+                      <span className="rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30 px-2 py-0.5 text-[10px] font-bold">
+                        Dose Taken ✓
+                      </span>
+                    )}
+
+                    {isSkipped && (
+                      <span className="rounded-full bg-red-500/20 text-red-300 border border-red-500/30 px-2 py-0.5 text-[10px] font-bold">
+                        Skipped ✕
                       </span>
                     )}
                   </div>
 
-                  <h3 className="font-semibold text-slate-100 text-sm mt-1">
-                    {item.medicine.name} — <span className="text-slate-400">{item.dosage}</span>
-                  </h3>
-                  {item.instructions && (
-                    <p className="text-xs text-slate-400 mt-1">{item.instructions}</p>
-                  )}
+                  <p className="text-xs text-slate-300">
+                    Dosage: <strong className="text-white font-semibold">{item.dosage}</strong>
+                    {item.instructions && (
+                      <span className="text-slate-400"> &bull; {item.instructions}</span>
+                    )}
+                  </p>
                 </div>
               </div>
 
-              {/* Right Column: Actions (Pause, Edit, Taken, Skipped) */}
-              <div className="flex items-center gap-3 self-end md:self-center">
+              {/* Right Column: Actions */}
+              <div className="flex items-center gap-2 self-end md:self-center">
                 {/* Time edit trigger */}
                 {item.isActive && !isEdited && (
                   <button
@@ -203,7 +223,8 @@ export function TimetableClient({ initialSchedules, todayStr }: TimetableClientP
                       setEditingId(item.id);
                       setEditTime(item.scheduledTime);
                     }}
-                    className="p-2 text-slate-500 hover:text-slate-350 hover:bg-slate-900 rounded-lg border border-slate-800 bg-slate-900/10 transition"
+                    className="p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-900 rounded-xl border border-slate-800 bg-slate-900/40 transition"
+                    title="Adjust schedule time"
                   >
                     <Settings className="h-4 w-4" />
                   </button>
@@ -212,25 +233,26 @@ export function TimetableClient({ initialSchedules, todayStr }: TimetableClientP
                 {/* Pause/Resume toggler */}
                 <button
                   onClick={() => handleToggleActive(item.id, item.isActive)}
-                  className={`p-2 rounded-lg border border-slate-800 transition ${
+                  className={`p-2 rounded-xl border border-slate-800 transition ${
                     item.isActive
-                      ? "text-slate-500 hover:text-orange-400 hover:bg-orange-500/5"
-                      : "text-teal-400 hover:text-teal-300 hover:bg-teal-500/5"
+                      ? "text-slate-400 hover:text-amber-400 hover:bg-amber-950/20"
+                      : "text-teal-400 hover:text-teal-300 hover:bg-teal-950/20"
                   }`}
+                  title={item.isActive ? "Pause schedule" : "Resume schedule"}
                 >
                   {item.isActive ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
                 </button>
 
                 {/* Log Taken / Skipped controls */}
                 {item.isActive && (
-                  <div className="flex items-center gap-2 border-l border-slate-800 pl-3">
+                  <div className="flex items-center gap-2 border-l border-slate-800/80 pl-2">
                     <button
                       onClick={() => handleLogStatus(item.id, "TAKEN")}
                       disabled={isPending}
-                      className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border text-xs font-semibold transition ${
+                      className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition shadow-sm ${
                         isTaken
-                          ? "bg-teal-500/10 border-teal-500/25 text-teal-400"
-                          : "border-slate-800 bg-slate-900/30 text-slate-400 hover:border-slate-700 hover:text-slate-200"
+                          ? "bg-teal-500 text-slate-950 shadow-teal-500/20"
+                          : "border border-slate-800 bg-slate-900/60 text-slate-300 hover:border-teal-500/30 hover:text-teal-300"
                       }`}
                     >
                       <CheckCircle2 className="h-4 w-4" />
@@ -239,14 +261,14 @@ export function TimetableClient({ initialSchedules, todayStr }: TimetableClientP
                     <button
                       onClick={() => handleLogStatus(item.id, "SKIPPED")}
                       disabled={isPending}
-                      className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border text-xs font-semibold transition ${
+                      className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition ${
                         isSkipped
-                          ? "bg-red-500/10 border-red-500/20 text-red-400"
-                          : "border-slate-800 bg-slate-900/30 text-slate-400 hover:border-slate-750 hover:text-slate-200"
+                          ? "bg-red-500 text-white shadow-red-500/20"
+                          : "border border-slate-800 bg-slate-900/60 text-slate-400 hover:border-red-500/30 hover:text-red-300"
                       }`}
                     >
                       <XCircle className="h-4 w-4" />
-                      Skipped
+                      Skip
                     </button>
                   </div>
                 )}

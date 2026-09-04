@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { startOcrExtraction, savePrescriptionReview } from "@/app/actions/ocr";
 import {
@@ -11,6 +11,8 @@ import {
   Trash2,
   AlertTriangle,
   Sparkles,
+  CheckCircle2,
+  HelpCircle,
 } from "lucide-react";
 
 interface ExtractedMedicine {
@@ -41,7 +43,7 @@ export function PrescriptionReviewClient({
   const [errorMsg, setErrorMsg] = useState("");
   const [isPending, startTransition] = useTransition();
 
-  // Step 1: Trigger Simulated AI OCR Extraction on mount if status is UPLOADED
+  // Trigger Simulated AI OCR Extraction on mount if status is UPLOADED
   useEffect(() => {
     if (status === "UPLOADED") {
       startTransition(async () => {
@@ -49,7 +51,6 @@ export function PrescriptionReviewClient({
           const res = await startOcrExtraction(prescriptionId);
           if (res.success && res.status) {
             setStatus(res.status);
-            // Refresh parent state or reload page
             router.refresh();
           }
         } catch {
@@ -70,7 +71,7 @@ export function PrescriptionReviewClient({
         route: "ORAL",
         duration: "ongoing",
         instructions: "",
-        confidence: 1.0, // manually added
+        confidence: 1.0,
       },
     ]);
   };
@@ -94,168 +95,173 @@ export function PrescriptionReviewClient({
 
   // Handle final submission review
   const handleConfirmReview = () => {
-    // Basic validation
     const hasEmptyName = medicines.some((m) => !m.medicineName.trim());
     if (hasEmptyName) {
-      setErrorMsg("All medicines must have a name.");
+      setErrorMsg("All medications must have a valid name before confirmation.");
       return;
     }
 
     setErrorMsg("");
-
     startTransition(async () => {
       try {
-        await savePrescriptionReview(prescriptionId, medicines);
-        setStatus("CONFIRMED");
-        router.refresh();
-      } catch (err) {
-        const msg = err instanceof Error ? err.message : "Failed to confirm prescription. Please try again.";
-        setErrorMsg(msg);
+        const payload = medicines.map((m) => ({
+          medicineName: m.medicineName.trim(),
+          dosage: m.dosage.trim(),
+          frequency: m.frequency.trim(),
+          route: (m.route.toUpperCase() as "ORAL" | "INJECTION" | "TOPICAL" | "INHALATION" | "OPHTHALMIC" | "OTIC") || "ORAL",
+          duration: m.duration.trim() || undefined,
+          instructions: m.instructions.trim() || undefined,
+        }));
+
+        const res = await savePrescriptionReview(prescriptionId, payload);
+        if (res.success) {
+          router.refresh();
+        } else {
+          setErrorMsg("Failed to save changes. Please try again.");
+        }
+      } catch {
+        setErrorMsg("An error occurred during confirmation.");
       }
     });
   };
 
-  // Render Loader if Processing
+  // Loading state during initial OCR pipeline
   if (status === "UPLOADED" || status === "PROCESSING") {
     return (
-      <div className="flex flex-col items-center justify-center py-16 text-center space-y-4 rounded-2xl border border-slate-800 bg-slate-900/10 p-8">
-        <Loader2 className="h-10 w-10 text-teal-400 animate-spin" />
+      <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl bg-slate-950/40 border border-slate-800/80 space-y-4">
+        <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-teal-500/10 text-teal-400 border border-teal-500/20 shadow-inner">
+          <Sparkles className="h-7 w-7 animate-pulse" />
+        </div>
         <div>
-          <h3 className="font-bold text-slate-200 text-sm">Processing Prescription</h3>
-          <p className="text-xs text-slate-400 mt-1 max-w-xs leading-relaxed">
-            Our AI/OCR engine is securely extracting medications, dosages, routes, and scheduling directions...
+          <h4 className="text-base font-bold text-white">AI OCR Extraction in Progress</h4>
+          <p className="text-xs text-slate-400 mt-1 max-w-sm">
+            Scanning document layout, optical characters, and matching active ingredients against verified registries...
           </p>
+        </div>
+        <div className="flex items-center gap-2 text-xs text-teal-400 font-mono">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          <span>Processing prescription stream</span>
         </div>
       </div>
     );
   }
 
-  // Render Confirmation Success banner if already confirmed
-  if (status === "CONFIRMED") {
-    return (
-      <div className="rounded-2xl border border-teal-500/20 bg-teal-500/5 p-6 text-center space-y-4">
-        <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-teal-500/15 border border-teal-500/20 text-teal-400">
-          <Check className="h-5 w-5" />
-        </div>
-        <div>
-          <h3 className="font-bold text-teal-400 text-sm">Prescription Confirmed</h3>
-          <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto leading-relaxed">
-            This prescription has been verified. The medicine information has been cached, and your daily schedule has been generated!
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  // Render Form Review Interface
   return (
     <div className="space-y-6">
-      {/* Title / Banner */}
-      <div className="rounded-2xl border border-orange-500/20 bg-orange-500/5 p-4 flex gap-3">
-        <AlertTriangle className="h-5 w-5 text-orange-400 shrink-0" />
-        <div>
-          <h4 className="text-xs font-bold text-orange-400 uppercase tracking-wide">Review Required</h4>
-          <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
-            AI extracted the following items. Please verify their accuracy and make corrections where needed. Confirmed schedules will generate automatically.
-          </p>
+      {/* Banner / Instructions */}
+      <div className="rounded-2xl border border-teal-500/25 bg-teal-950/20 p-4 text-xs text-slate-300 space-y-2">
+        <div className="flex items-center gap-2 text-teal-300 font-bold">
+          <CheckCircle2 className="h-4 w-4 text-teal-400" />
+          <span>Human-in-the-Loop Clinical Verification</span>
         </div>
+        <p className="text-slate-400 leading-relaxed">
+          Carefully verify extracted medication names, dosage strength, and frequency. Once confirmed, these instructions will directly feed the deterministic scheduling engine.
+        </p>
       </div>
 
       {errorMsg && (
-        <div className="rounded-lg border border-red-500/20 bg-red-500/5 px-4 py-3 text-xs text-red-400 flex items-center gap-2">
-          <AlertCircle className="h-4 w-4 shrink-0" />
+        <div className="flex items-start gap-2.5 rounded-xl border border-red-500/30 bg-red-950/20 p-3.5 text-xs text-red-300">
+          <AlertCircle className="h-4 w-4 shrink-0 text-red-400 mt-0.5" />
           <span>{errorMsg}</span>
         </div>
       )}
 
-      {/* Medicines list inputs */}
+      {/* Medication List */}
       <div className="space-y-4">
         {medicines.map((med, index) => {
-          const showConfidence = med.confidence && med.confidence < 1.0;
-          const confPercent = med.confidence ? Math.round(med.confidence * 100) : 100;
+          const confidencePct = Math.round((med.confidence ?? 0.85) * 100);
+          const isHighConfidence = confidencePct >= 90;
 
           return (
             <div
-              key={index}
-              className="rounded-xl border border-slate-800 bg-slate-950/40 p-4 space-y-4 transition hover:border-slate-700/80"
+              key={med.id || index}
+              className="rounded-2xl border border-slate-800/80 bg-slate-950/60 p-5 space-y-4 shadow-sm hover:border-slate-700 transition"
             >
-              {/* Row Header with index and Delete */}
-              <div className="flex justify-between items-center">
-                <span className="text-xs font-bold text-slate-400 flex items-center gap-1.5">
-                  Medication #{index + 1}
-                  {showConfidence && (
-                    <span className={`inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[8px] font-semibold border ${
-                      confPercent < 90 
-                        ? "bg-amber-500/10 text-amber-400 border-amber-500/15" 
-                        : "bg-teal-500/10 text-teal-400 border-teal-500/15"
-                    }`}>
-                      {confPercent < 90 ? <AlertTriangle className="h-2 w-2" /> : <Sparkles className="h-2 w-2" />}
-                      {confPercent}% confidence {confPercent < 90 ? "- Verify Carefully" : ""}
-                    </span>
-                  )}
-                </span>
+              {/* Row Header */}
+              <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-slate-900 border border-slate-800 text-[11px] font-bold text-teal-400">
+                    #{index + 1}
+                  </span>
+                  <span
+                    className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase ${
+                      isHighConfidence
+                        ? "bg-teal-500/10 text-teal-400 border border-teal-500/20"
+                        : "bg-amber-500/10 text-amber-400 border border-amber-500/20"
+                    }`}
+                  >
+                    {isHighConfidence ? (
+                      <CheckCircle2 className="h-3 w-3" />
+                    ) : (
+                      <AlertTriangle className="h-3 w-3" />
+                    )}
+                    <span>{confidencePct}% Confidence</span>
+                  </span>
+                </div>
+
                 <button
                   type="button"
                   onClick={() => deleteMedicineRow(index)}
-                  className="text-slate-500 hover:text-red-400 transition p-1"
+                  className="rounded-lg p-1.5 text-slate-500 hover:bg-red-950/30 hover:text-red-400 transition"
+                  title="Remove medication"
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>
               </div>
 
               {/* Input Form Fields Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {/* Medicine Name */}
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                    Medicine Name
+                <div className="space-y-1.5 sm:col-span-2 lg:col-span-1">
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    Medicine Name *
                   </label>
                   <input
                     type="text"
                     value={med.medicineName}
                     onChange={(e) => handleInputChange(index, "medicineName", e.target.value)}
-                    placeholder="e.g. Metformin"
-                    className="w-full rounded-lg bg-slate-900 border border-slate-850 px-3 py-2 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:border-teal-500"
+                    placeholder="e.g. Amoxicillin"
+                    className="w-full rounded-xl bg-slate-900 border border-slate-800 px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition"
                   />
                 </div>
 
                 {/* Dosage */}
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                    Dosage
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    Dosage *
                   </label>
                   <input
                     type="text"
                     value={med.dosage}
                     onChange={(e) => handleInputChange(index, "dosage", e.target.value)}
-                    placeholder="e.g. 1 tablet"
-                    className="w-full rounded-lg bg-slate-900 border border-slate-850 px-3 py-2 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:border-teal-500"
+                    placeholder="e.g. 500mg, 1 tablet"
+                    className="w-full rounded-xl bg-slate-900 border border-slate-800 px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition"
                   />
                 </div>
 
                 {/* Frequency */}
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                    Frequency / Intervals
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    Frequency / Interval *
                   </label>
                   <input
                     type="text"
                     value={med.frequency}
                     onChange={(e) => handleInputChange(index, "frequency", e.target.value)}
-                    placeholder="e.g. twice daily"
-                    className="w-full rounded-lg bg-slate-900 border border-slate-850 px-3 py-2 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:border-teal-500"
+                    placeholder="e.g. twice daily, every 8 hours"
+                    className="w-full rounded-xl bg-slate-900 border border-slate-800 px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition"
                   />
                 </div>
 
                 {/* Route of Administration */}
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                    Route
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    Administration Route
                   </label>
                   <select
                     value={med.route}
                     onChange={(e) => handleInputChange(index, "route", e.target.value)}
-                    className="w-full rounded-lg bg-slate-900 border border-slate-850 px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-teal-500"
+                    className="w-full rounded-xl bg-slate-900 border border-slate-800 px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition"
                   >
                     <option value="ORAL">Oral</option>
                     <option value="INJECTION">Injection</option>
@@ -267,30 +273,30 @@ export function PrescriptionReviewClient({
                 </div>
 
                 {/* Duration */}
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                    Duration
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    Treatment Duration
                   </label>
                   <input
                     type="text"
                     value={med.duration}
                     onChange={(e) => handleInputChange(index, "duration", e.target.value)}
-                    placeholder="e.g. for 7 days"
-                    className="w-full rounded-lg bg-slate-900 border border-slate-850 px-3 py-2 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:border-teal-500"
+                    placeholder="e.g. 7 days, ongoing"
+                    className="w-full rounded-xl bg-slate-900 border border-slate-800 px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition"
                   />
                 </div>
 
                 {/* Instructions */}
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                    Special Instructions
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    Food & Bedtime Instructions
                   </label>
                   <input
                     type="text"
                     value={med.instructions}
                     onChange={(e) => handleInputChange(index, "instructions", e.target.value)}
-                    placeholder="e.g. after breakfast"
-                    className="w-full rounded-lg bg-slate-900 border border-slate-850 px-3 py-2 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:border-teal-500"
+                    placeholder="e.g. after breakfast, before sleeping"
+                    className="w-full rounded-xl bg-slate-900 border border-slate-800 px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition"
                   />
                 </div>
               </div>
@@ -299,29 +305,29 @@ export function PrescriptionReviewClient({
         })}
       </div>
 
-      {/* Buttons */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-900">
+      {/* Actions */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-800/80">
         <button
           type="button"
           onClick={addMedicineRow}
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900/30 px-4 py-2 text-xs font-semibold text-slate-300 hover:border-slate-700 transition"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-slate-800 bg-slate-900/60 hover:bg-slate-900 hover:border-slate-700 px-4 py-2.5 text-xs font-bold text-slate-200 transition"
         >
-          <Plus className="h-4 w-4" />
-          Add Medication
+          <Plus className="h-4 w-4 text-teal-400" />
+          <span>Add Another Medication</span>
         </button>
 
         <button
           type="button"
           onClick={handleConfirmReview}
           disabled={isPending || medicines.length === 0}
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 rounded-lg bg-teal-500 hover:bg-teal-400 disabled:opacity-40 text-slate-950 px-5 py-2.5 text-xs font-semibold transition shadow-md shadow-teal-500/10"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-400 to-teal-500 hover:from-teal-300 hover:to-teal-400 disabled:opacity-50 text-slate-950 font-bold px-6 py-2.5 text-xs transition shadow-lg shadow-teal-500/20 hover:-translate-y-0.5"
         >
           {isPending ? (
             <Loader2 className="h-4 w-4 animate-spin" />
           ) : (
-            <Check className="h-4 w-4" />
+            <Check className="h-4 w-4 stroke-[2.5]" />
           )}
-          Confirm & Verify Prescription
+          <span>Confirm & Lock Extracted Regimen</span>
         </button>
       </div>
     </div>

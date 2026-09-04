@@ -109,8 +109,8 @@ export async function savePrescriptionReview(
     dosage: string;
     frequency: string;
     route: string;
-    duration: string;
-    instructions: string;
+    duration?: string;
+    instructions?: string;
   }>
 ) {
   const session = await auth();
