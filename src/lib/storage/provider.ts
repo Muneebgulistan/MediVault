@@ -1,5 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
+import os from "os";
 
 export interface StorageProvider {
   /**
@@ -21,9 +22,13 @@ export interface StorageProvider {
 /**
  * Local Disk storage provider for secure local development.
  * Stores files outside of the public directory (in private_uploads/) to prevent public exposure.
+ * Uses writable os.tmpdir() when running on Vercel / serverless runtimes.
  */
 export class DiskStorageProvider implements StorageProvider {
-  private uploadDir = path.join(process.cwd(), "private_uploads");
+  private uploadDir =
+    process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME
+      ? path.join(os.tmpdir(), "private_uploads")
+      : path.join(process.cwd(), "private_uploads");
 
   private async ensureDir() {
     await fs.mkdir(this.uploadDir, { recursive: true });
