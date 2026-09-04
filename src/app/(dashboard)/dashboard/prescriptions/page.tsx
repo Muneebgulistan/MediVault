@@ -13,12 +13,20 @@ export default async function PrescriptionsPage() {
 
   const userId = session.user.id;
 
-  // Retrieve user's prescriptions only (data isolation)
-  const prescriptions = await prisma.prescription.findMany({
-    where: { userId },
-    orderBy: { createdAt: "desc" },
-    include: { _count: { select: { files: true, medicines: true } } },
-  });
+  // Retrieve user's prescriptions only (data isolation) with error safety
+  let prescriptions: Awaited<ReturnType<typeof prisma.prescription.findMany<{
+    include: { _count: { select: { files: true; medicines: true } } };
+  }>>> = [];
+
+  try {
+    prescriptions = await prisma.prescription.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+      include: { _count: { select: { files: true, medicines: true } } },
+    });
+  } catch (error) {
+    console.error("Failed to query prescriptions:", error);
+  }
 
   return (
     <div className="space-y-6">
@@ -87,13 +95,13 @@ export default async function PrescriptionsPage() {
                     <p>Date: {new Date(rx.prescriptionDate).toLocaleDateString()}</p>
                   )}
                   <p className="pt-2 text-[10px] text-slate-500">
-                    Medicines: {rx._count.medicines} • Files: {rx._count.files}
+                    Medicines: {rx._count?.medicines ?? 0} • Files: {rx._count?.files ?? 0}
                   </p>
                 </div>
               </div>
               <div className="border-t border-slate-800/80 pt-4 flex items-center justify-between">
                 <span className="text-[10px] text-slate-500">
-                  Added: {new Date(rx.createdAt).toLocaleDateString()}
+                  Added: {rx.createdAt ? new Date(rx.createdAt).toLocaleDateString() : ""}
                 </span>
                 <Link
                   href={`/dashboard/prescriptions/${rx.id}`}

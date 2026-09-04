@@ -13,12 +13,20 @@ export default async function RemindersPage() {
 
   const userId = session.user.id;
 
-  // Reminders are computed based on active schedules
-  const activeSchedules = await prisma.medicineSchedule.findMany({
-    where: { userId, isActive: true },
-    include: { medicine: true },
-    orderBy: { scheduledTime: "asc" },
-  });
+  // Reminders are computed based on active schedules with error safety
+  let activeSchedules: Awaited<ReturnType<typeof prisma.medicineSchedule.findMany<{
+    include: { medicine: true };
+  }>>> = [];
+
+  try {
+    activeSchedules = await prisma.medicineSchedule.findMany({
+      where: { userId, isActive: true },
+      include: { medicine: true },
+      orderBy: { scheduledTime: "asc" },
+    });
+  } catch (error) {
+    console.error("Failed to query reminders:", error);
+  }
 
   return (
     <div className="space-y-6">

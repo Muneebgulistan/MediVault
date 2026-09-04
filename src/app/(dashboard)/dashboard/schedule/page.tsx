@@ -14,20 +14,31 @@ export default async function SchedulePage() {
   const userId = session.user.id;
   const todayStr = new Date().toISOString().split("T")[0]; // "YYYY-MM-DD"
 
-  // Fetch all schedules for this user (both active and paused so they can toggle them)
-  const schedules = await prisma.medicineSchedule.findMany({
-    where: {
-      userId,
-    },
+  // Fetch all schedules for this user (both active and paused so they can toggle them) with error safety
+  let schedules: Awaited<ReturnType<typeof prisma.medicineSchedule.findMany<{
     include: {
-      medicine: true,
-      logs: {
-        where: {
-          takenDate: todayStr,
+      medicine: true;
+      logs: { where: { takenDate: string } };
+    };
+  }>>> = [];
+
+  try {
+    schedules = await prisma.medicineSchedule.findMany({
+      where: {
+        userId,
+      },
+      include: {
+        medicine: true,
+        logs: {
+          where: {
+            takenDate: todayStr,
+          },
         },
       },
-    },
-  });
+    });
+  } catch (error) {
+    console.error("Failed to query schedules:", error);
+  }
 
   // Map database schedules into clean serializable props for the client component
   const formattedSchedules = schedules.map((s) => ({

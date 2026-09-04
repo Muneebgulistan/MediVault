@@ -13,11 +13,19 @@ export default async function MedicinesPage() {
 
   const userId = session.user.id;
 
-  // Retrieve medicines that appear in the user's prescriptions
-  const prescriptionMedicines = await prisma.prescriptionMedicine.findMany({
-    where: { prescription: { userId } },
-    include: { medicine: true },
-  });
+  // Retrieve medicines that appear in the user's prescriptions with error safety
+  let prescriptionMedicines: Awaited<ReturnType<typeof prisma.prescriptionMedicine.findMany<{
+    include: { medicine: true };
+  }>>> = [];
+
+  try {
+    prescriptionMedicines = await prisma.prescriptionMedicine.findMany({
+      where: { prescription: { userId } },
+      include: { medicine: true },
+    });
+  } catch (error) {
+    console.error("Failed to query medicines:", error);
+  }
 
   // Unique medicines mapping
   const uniqueMedicinesMap = new Map();
