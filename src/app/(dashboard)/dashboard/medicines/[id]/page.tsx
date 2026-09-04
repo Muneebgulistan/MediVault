@@ -54,25 +54,25 @@ export default async function MedicineDetailPage({ params }: MedicineDetailPageP
       <div>
         <Link
           href="/dashboard/medicines"
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-400 hover:text-teal-400 transition-colors mb-4 group"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors mb-4 group"
         >
           <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" /> Back to medicines catalog
         </Link>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500/20 to-blue-500/10 text-teal-400 border border-teal-500/25 shadow-lg shadow-teal-500/5">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--bg-surface-alt)] text-[var(--accent)] border border-[var(--border-default)] shadow-sm">
               <Pill className="h-6 w-6" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-bold tracking-tight text-white">{medicine.name}</h1>
-                <span className="rounded-full bg-teal-500/10 border border-teal-500/25 px-2.5 py-0.5 text-[10px] font-semibold text-teal-400">
+                <h1 className="text-2xl font-bold tracking-tight text-[var(--text-primary)]">{medicine.name}</h1>
+                <span className="rounded-full bg-[var(--success-bg)] border border-[var(--success-fg)]/25 px-2.5 py-0.5 text-[10px] font-mono font-medium text-[var(--success-fg)]">
                   Prescription Active
                 </span>
               </div>
               {research.genericName && (
-                <p className="text-xs text-slate-400 mt-1">
-                  Active Molecule: <span className="text-slate-200 font-medium">{research.genericName}</span>
+                <p className="text-xs text-[var(--text-secondary)] mt-1">
+                  Active Molecule: <span className="text-[var(--text-primary)] font-medium">{research.genericName}</span>
                 </p>
               )}
             </div>
@@ -83,15 +83,15 @@ export default async function MedicineDetailPage({ params }: MedicineDetailPageP
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Left Side: PRESCRIBED BY DOCTOR (Strict medical directions) */}
         <div className="lg:col-span-1 space-y-6">
-          <div className="rounded-2xl border border-teal-500/30 bg-gradient-to-b from-teal-500/10 via-slate-900/60 to-slate-900/90 p-5 backdrop-blur-xl shadow-xl space-y-5">
-            <div className="border-b border-teal-500/20 pb-3.5">
-              <div className="flex items-center gap-2 text-teal-400">
-                <HeartPulse className="h-4 w-4" />
-                <h2 className="text-xs font-bold uppercase tracking-wider">
+          <div className="rounded-2xl border border-[var(--border-default)] bg-[var(--bg-surface)] p-5 shadow-sm space-y-5">
+            <div className="border-b border-[var(--border-default)] pb-3.5">
+              <div className="flex items-center gap-2 text-[var(--text-primary)]">
+                <HeartPulse className="h-4 w-4 text-[var(--accent)]" />
+                <h2 className="text-xs font-mono font-bold uppercase tracking-wider">
                   Doctor's Prescribed Orders
                 </h2>
               </div>
-              <p className="text-[11px] text-teal-300/80 mt-1 leading-relaxed">
+              <p className="text-[11px] text-[var(--text-secondary)] mt-1 leading-relaxed">
                 Strict directions authorized by your physician. Do not deviate from these instructions.
               </p>
             </div>
@@ -100,47 +100,47 @@ export default async function MedicineDetailPage({ params }: MedicineDetailPageP
               {prescriptionItems.map((item) => (
                 <div
                   key={item.id}
-                  className="rounded-xl border border-slate-800/80 bg-slate-950/70 p-4 space-y-3.5 shadow-inner"
+                  className="rounded-xl border border-[var(--border-default)] bg-[var(--bg-surface-alt)] p-4 space-y-3.5 shadow-sm"
                 >
-                  <div className="flex items-center justify-between border-b border-slate-800/70 pb-2">
-                    <p className="text-xs font-semibold text-slate-200 truncate">
+                  <div className="flex items-center justify-between border-b border-[var(--border-default)] pb-2">
+                    <p className="text-xs font-semibold text-[var(--text-primary)] truncate">
                       {item.prescription.title}
                     </p>
-                    <span className="text-[9px] font-mono text-teal-400 bg-teal-500/10 px-1.5 py-0.5 rounded border border-teal-500/20">
+                    <span className="text-[9px] font-mono text-[var(--success-fg)] bg-[var(--success-bg)] px-1.5 py-0.5 rounded border border-[var(--success-fg)]/25">
                       Verified
                     </span>
                   </div>
                   
                   <div className="grid grid-cols-2 gap-2 text-[11px]">
-                    <div className="rounded-lg bg-slate-900/60 border border-slate-800/60 p-2">
-                      <span className="text-[10px] text-slate-400 block font-medium">Dosage</span>
-                      <strong className="text-slate-100 font-semibold">{item.dosage}</strong>
+                    <div className="rounded-lg bg-[var(--bg-surface)] border border-[var(--border-default)] p-2">
+                      <span className="text-[10px] text-[var(--text-muted)] block font-mono font-medium">Dosage</span>
+                      <strong className="text-[var(--text-primary)] font-semibold">{item.dosage}</strong>
                     </div>
-                    <div className="rounded-lg bg-slate-900/60 border border-slate-800/60 p-2">
-                      <span className="text-[10px] text-slate-400 block font-medium">Frequency</span>
-                      <strong className="text-slate-100 font-semibold">{item.frequency}</strong>
+                    <div className="rounded-lg bg-[var(--bg-surface)] border border-[var(--border-default)] p-2">
+                      <span className="text-[10px] text-[var(--text-muted)] block font-mono font-medium">Frequency</span>
+                      <strong className="text-[var(--text-primary)] font-semibold">{item.frequency}</strong>
                     </div>
-                    <div className="rounded-lg bg-slate-900/60 border border-slate-800/60 p-2">
-                      <span className="text-[10px] text-slate-400 block font-medium">Route</span>
-                      <strong className="text-slate-100 font-semibold">{item.route}</strong>
+                    <div className="rounded-lg bg-[var(--bg-surface)] border border-[var(--border-default)] p-2">
+                      <span className="text-[10px] text-[var(--text-muted)] block font-mono font-medium">Route</span>
+                      <strong className="text-[var(--text-primary)] font-semibold">{item.route}</strong>
                     </div>
-                    <div className="rounded-lg bg-slate-900/60 border border-slate-800/60 p-2">
-                      <span className="text-[10px] text-slate-400 block font-medium">Duration</span>
-                      <strong className="text-slate-100 font-semibold">{item.duration || "Ongoing"}</strong>
+                    <div className="rounded-lg bg-[var(--bg-surface)] border border-[var(--border-default)] p-2">
+                      <span className="text-[10px] text-[var(--text-muted)] block font-mono font-medium">Duration</span>
+                      <strong className="text-[var(--text-primary)] font-semibold">{item.duration || "Ongoing"}</strong>
                     </div>
                   </div>
 
                   {item.instructions && (
-                    <div className="rounded-lg bg-teal-500/5 border border-teal-500/15 p-2.5 text-xs text-slate-300 leading-relaxed">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-teal-400 block mb-0.5">
+                    <div className="rounded-lg bg-[var(--bg-surface)] border border-[var(--border-default)] p-2.5 text-xs text-[var(--text-secondary)] leading-relaxed">
+                      <span className="text-[10px] font-mono font-medium uppercase tracking-wider text-[var(--text-muted)] block mb-0.5">
                         Specific Instructions:
                       </span>
                       {item.instructions}
                     </div>
                   )}
 
-                  <div className="flex items-center gap-2 pt-1 text-[11px] text-slate-400">
-                    <User className="h-3.5 w-3.5 text-slate-500 shrink-0" />
+                  <div className="flex items-center gap-2 pt-1 text-[11px] text-[var(--text-muted)]">
+                    <User className="h-3.5 w-3.5 text-[var(--text-muted)] shrink-0" />
                     <span className="truncate font-medium">
                       Dr. {item.prescription.doctorName || "Licensed Physician"}
                     </span>
@@ -154,25 +154,25 @@ export default async function MedicineDetailPage({ params }: MedicineDetailPageP
         {/* Right Side: ADDITIONAL MEDICINE INFORMATION (Research block) */}
         <div className="lg:col-span-2 space-y-6">
           {/* Medical Disclaimer Banner */}
-          <div className="rounded-2xl bg-amber-500/10 border border-amber-500/25 p-4 flex items-start gap-3.5 shadow-lg shadow-amber-500/5">
-            <ShieldAlert className="h-5 w-5 text-amber-400 shrink-0 mt-0.5" />
+          <div className="rounded-2xl bg-[var(--warning-bg)] border border-[var(--warning-fg)]/25 p-4 flex items-start gap-3.5 shadow-sm">
+            <ShieldAlert className="h-5 w-5 text-[var(--warning-fg)] shrink-0 mt-0.5" />
             <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-amber-400">Clinical Knowledge Notice</p>
-              <p className="text-xs text-slate-300/90 mt-1 leading-relaxed">
+              <p className="text-xs font-mono font-bold uppercase tracking-wider text-[var(--warning-fg)]">Clinical Knowledge Notice</p>
+              <p className="text-xs text-[var(--text-secondary)] mt-1 leading-relaxed">
                 This monograph is synthesized from openFDA records for educational reference. It never replaces direct medical advice from your physician or pharmacist. Never alter your prescribed regimen based on secondary reference data.
               </p>
             </div>
           </div>
 
           {/* Research content card */}
-          <div className="rounded-2xl border border-slate-800/80 bg-slate-900/40 p-6 backdrop-blur-xl shadow-xl space-y-6">
-            <div className="border-b border-slate-800/80 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              <h2 className="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
-                <BookOpen className="h-4.5 w-4.5 text-teal-400" />
+          <div className="rounded-2xl border border-[var(--border-default)] bg-[var(--bg-surface)] p-6 shadow-sm space-y-6">
+            <div className="border-b border-[var(--border-default)] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <h2 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-2">
+                <BookOpen className="h-4.5 w-4.5 text-[var(--accent)]" />
                 openFDA Clinical Monograph
               </h2>
               {research.identified && research.retrievedAt && (
-                <span className="text-[10px] font-mono text-slate-400 bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700/60">
+                <span className="text-[10px] font-mono text-[var(--text-muted)] bg-[var(--bg-surface-alt)] px-2 py-0.5 rounded border border-[var(--border-default)]">
                   Cached: {new Date(research.retrievedAt).toLocaleDateString()}
                 </span>
               )}
@@ -180,12 +180,12 @@ export default async function MedicineDetailPage({ params }: MedicineDetailPageP
 
             {!research.identified ? (
               /* UNIDENTIFIED STATE */
-              <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-8 text-center flex flex-col items-center">
-                <AlertTriangle className="h-10 w-10 text-amber-400 mb-3" />
-                <p className="text-sm font-semibold text-amber-400">
+              <div className="rounded-xl border border-[var(--warning-fg)]/25 bg-[var(--warning-bg)] p-8 text-center flex flex-col items-center">
+                <AlertTriangle className="h-10 w-10 text-[var(--warning-fg)] mb-3" />
+                <p className="text-sm font-semibold text-[var(--warning-fg)]">
                   No matching FDA labeling monograph found
                 </p>
-                <p className="text-xs text-slate-400 max-w-md mt-1.5 leading-relaxed">
+                <p className="text-xs text-[var(--text-muted)] max-w-md mt-1.5 leading-relaxed">
                   We could not automatically match this medication name against current openFDA catalogs. Your prescribed regimen remains valid as entered above.
                 </p>
               </div>
@@ -194,10 +194,10 @@ export default async function MedicineDetailPage({ params }: MedicineDetailPageP
               <div className="space-y-6 text-sm">
                 {/* Description */}
                 <div>
-                  <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                  <h4 className="text-[11px] font-mono font-medium text-[var(--text-muted)] uppercase tracking-wider mb-2 flex items-center gap-1.5">
                     Description & Overview
                   </h4>
-                  <div className="rounded-xl bg-slate-950/60 border border-slate-800/70 p-4 text-xs text-slate-300 leading-relaxed whitespace-pre-line">
+                  <div className="rounded-xl bg-[var(--bg-surface-alt)] border border-[var(--border-default)] p-4 text-xs text-[var(--text-secondary)] leading-relaxed whitespace-pre-line">
                     {research.description}
                   </div>
                 </div>
@@ -205,14 +205,14 @@ export default async function MedicineDetailPage({ params }: MedicineDetailPageP
                 {/* Common Brand Names */}
                 {research.brandNames && research.brandNames.length > 0 && (
                   <div>
-                    <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                    <h4 className="text-[11px] font-mono font-medium text-[var(--text-muted)] uppercase tracking-wider mb-2">
                       Recognized Commercial Brand Names
                     </h4>
                     <div className="flex flex-wrap gap-2">
                       {research.brandNames.map((brand, idx) => (
                         <span
                           key={idx}
-                          className="rounded-lg bg-slate-800/80 border border-slate-700/80 text-teal-300 px-2.5 py-1 text-xs font-medium"
+                          className="rounded-lg bg-[var(--bg-surface-alt)] border border-[var(--border-default)] text-[var(--text-primary)] px-2.5 py-1 text-xs font-mono"
                         >
                           {brand}
                         </span>
@@ -224,10 +224,10 @@ export default async function MedicineDetailPage({ params }: MedicineDetailPageP
                 {/* Common Uses / Indications */}
                 {research.indications && (
                   <div>
-                    <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                    <h4 className="text-[11px] font-mono font-medium text-[var(--text-muted)] uppercase tracking-wider mb-2">
                       Clinical Uses & Indications
                     </h4>
-                    <div className="rounded-xl bg-slate-950/60 border border-slate-800/70 p-4 text-xs text-slate-300 leading-relaxed whitespace-pre-line">
+                    <div className="rounded-xl bg-[var(--bg-surface-alt)] border border-[var(--border-default)] p-4 text-xs text-[var(--text-secondary)] leading-relaxed whitespace-pre-line">
                       {research.indications}
                     </div>
                   </div>
@@ -236,10 +236,10 @@ export default async function MedicineDetailPage({ params }: MedicineDetailPageP
                 {/* Side Effects */}
                 {research.sideEffects && (
                   <div>
-                    <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                    <h4 className="text-[11px] font-mono font-medium text-[var(--text-muted)] uppercase tracking-wider mb-2">
                       Reported Adverse Reactions & Side Effects
                     </h4>
-                    <div className="rounded-xl bg-slate-950/60 border border-slate-800/70 p-4 text-xs text-slate-300 leading-relaxed whitespace-pre-line">
+                    <div className="rounded-xl bg-[var(--bg-surface-alt)] border border-[var(--border-default)] p-4 text-xs text-[var(--text-secondary)] leading-relaxed whitespace-pre-line">
                       {research.sideEffects}
                     </div>
                   </div>
@@ -248,10 +248,10 @@ export default async function MedicineDetailPage({ params }: MedicineDetailPageP
                 {/* Warnings */}
                 {research.warnings && (
                   <div>
-                    <h4 className="text-[11px] font-bold text-rose-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                      <AlertTriangle className="h-3.5 w-3.5" /> Black Box Warnings & Precautions
+                    <h4 className="text-[11px] font-mono font-bold text-[var(--danger-fg)] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                      <AlertTriangle className="h-3.5 w-3.5 text-[var(--danger-fg)]" /> Black Box Warnings & Precautions
                     </h4>
-                    <div className="rounded-xl bg-rose-500/5 border border-rose-500/20 p-4 text-xs text-rose-300/90 leading-relaxed whitespace-pre-line">
+                    <div className="rounded-xl bg-[var(--danger-bg)] border border-[var(--danger-fg)]/25 p-4 text-xs text-[var(--danger-fg)] leading-relaxed whitespace-pre-line">
                       {research.warnings}
                     </div>
                   </div>
@@ -260,10 +260,10 @@ export default async function MedicineDetailPage({ params }: MedicineDetailPageP
                 {/* Interactions */}
                 {research.interactions && (
                   <div>
-                    <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                    <h4 className="text-[11px] font-mono font-medium text-[var(--text-muted)] uppercase tracking-wider mb-2">
                       Known Drug Interactions
                     </h4>
-                    <div className="rounded-xl bg-slate-950/60 border border-slate-800/70 p-4 text-xs text-slate-300 leading-relaxed whitespace-pre-line">
+                    <div className="rounded-xl bg-[var(--bg-surface-alt)] border border-[var(--border-default)] p-4 text-xs text-[var(--text-secondary)] leading-relaxed whitespace-pre-line">
                       {research.interactions}
                     </div>
                   </div>
@@ -272,10 +272,10 @@ export default async function MedicineDetailPage({ params }: MedicineDetailPageP
                 {/* Storage */}
                 {research.storageInfo && (
                   <div>
-                    <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                    <h4 className="text-[11px] font-mono font-medium text-[var(--text-muted)] uppercase tracking-wider mb-2">
                       Storage, Handling & Stability
                     </h4>
-                    <div className="rounded-xl bg-slate-950/60 border border-slate-800/70 p-4 text-xs text-slate-300 leading-relaxed whitespace-pre-line">
+                    <div className="rounded-xl bg-[var(--bg-surface-alt)] border border-[var(--border-default)] p-4 text-xs text-[var(--text-secondary)] leading-relaxed whitespace-pre-line">
                       {research.storageInfo}
                     </div>
                   </div>
@@ -283,19 +283,19 @@ export default async function MedicineDetailPage({ params }: MedicineDetailPageP
 
                 {/* Source footer */}
                 {research.sourceName && research.sourceUrl && (
-                  <div className="border-t border-slate-800/80 pt-4 text-xs text-slate-400 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div className="border-t border-[var(--border-default)] pt-4 text-xs text-[var(--text-muted)] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <span>
                       Official Data Source:{" "}
                       <a
                         href={research.sourceUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-teal-400 hover:text-teal-300 underline font-medium"
+                        className="text-[var(--accent)] hover:text-[var(--accent-hover)] underline font-medium"
                       >
                         {research.sourceName}
                       </a>
                     </span>
-                    <span className="text-[11px] text-slate-500 font-mono">
+                    <span className="text-[11px] text-[var(--text-muted)] font-mono">
                       Timestamp: {research.retrievedAt ? new Date(research.retrievedAt).toLocaleString() : "Live"}
                     </span>
                   </div>

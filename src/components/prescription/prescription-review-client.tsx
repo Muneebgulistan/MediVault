@@ -128,18 +128,18 @@ export function PrescriptionReviewClient({
   // Loading state during initial OCR pipeline
   if (status === "UPLOADED" || status === "PROCESSING") {
     return (
-      <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl bg-slate-950/40 border border-slate-800/80 space-y-4">
-        <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-teal-500/10 text-teal-400 border border-teal-500/20 shadow-inner">
+      <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-default)] space-y-4">
+        <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--bg-surface-alt)] text-[var(--accent)] border border-[var(--border-default)] shadow-sm">
           <Sparkles className="h-7 w-7 animate-pulse" />
         </div>
         <div>
-          <h4 className="text-base font-bold text-white">AI OCR Extraction in Progress</h4>
-          <p className="text-xs text-slate-400 mt-1 max-w-sm">
+          <h4 className="text-base font-bold text-[var(--text-primary)]">AI OCR Extraction in Progress</h4>
+          <p className="text-xs text-[var(--text-secondary)] mt-1 max-w-sm">
             Scanning document layout, optical characters, and matching active ingredients against verified registries...
           </p>
         </div>
-        <div className="flex items-center gap-2 text-xs text-teal-400 font-mono">
-          <Loader2 className="h-4 w-4 animate-spin" />
+        <div className="flex items-center gap-2 text-xs text-[var(--text-muted)] font-mono">
+          <Loader2 className="h-4 w-4 animate-spin text-[var(--accent)]" />
           <span>Processing prescription stream</span>
         </div>
       </div>
@@ -149,19 +149,19 @@ export function PrescriptionReviewClient({
   return (
     <div className="space-y-6">
       {/* Banner / Instructions */}
-      <div className="rounded-2xl border border-teal-500/25 bg-teal-950/20 p-4 text-xs text-slate-300 space-y-2">
-        <div className="flex items-center gap-2 text-teal-300 font-bold">
-          <CheckCircle2 className="h-4 w-4 text-teal-400" />
+      <div className="rounded-2xl border border-[var(--border-default)] bg-[var(--bg-surface-alt)] p-4 text-xs space-y-2">
+        <div className="flex items-center gap-2 text-[var(--text-primary)] font-semibold">
+          <CheckCircle2 className="h-4 w-4 text-[var(--accent)]" />
           <span>Human-in-the-Loop Clinical Verification</span>
         </div>
-        <p className="text-slate-400 leading-relaxed">
+        <p className="text-[var(--text-secondary)] leading-relaxed">
           Carefully verify extracted medication names, dosage strength, and frequency. Once confirmed, these instructions will directly feed the deterministic scheduling engine.
         </p>
       </div>
 
       {errorMsg && (
-        <div className="flex items-start gap-2.5 rounded-xl border border-red-500/30 bg-red-950/20 p-3.5 text-xs text-red-300">
-          <AlertCircle className="h-4 w-4 shrink-0 text-red-400 mt-0.5" />
+        <div className="flex items-start gap-2.5 rounded-xl border border-[var(--danger-fg)]/25 bg-[var(--danger-bg)] p-3.5 text-xs text-[var(--danger-fg)]">
+          <AlertCircle className="h-4 w-4 shrink-0 text-[var(--danger-fg)] mt-0.5" />
           <span>{errorMsg}</span>
         </div>
       )}
@@ -175,19 +175,19 @@ export function PrescriptionReviewClient({
           return (
             <div
               key={med.id || index}
-              className="rounded-2xl border border-slate-800/80 bg-slate-950/60 p-5 space-y-4 shadow-sm hover:border-slate-700 transition"
+              className="rounded-xl border border-[var(--border-default)] bg-[var(--bg-surface-alt)] p-5 space-y-4 shadow-sm hover:border-[var(--border-strong)] transition"
             >
               {/* Row Header */}
-              <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
+              <div className="flex items-center justify-between border-b border-[var(--border-default)] pb-3">
                 <div className="flex items-center gap-3">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-slate-900 border border-slate-800 text-[11px] font-bold text-teal-400">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-md bg-[var(--bg-surface)] border border-[var(--border-default)] text-[11px] font-mono font-bold text-[var(--text-secondary)]">
                     #{index + 1}
                   </span>
                   <span
-                    className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase ${
+                    className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-mono font-medium tracking-wider uppercase ${
                       isHighConfidence
-                        ? "bg-teal-500/10 text-teal-400 border border-teal-500/20"
-                        : "bg-amber-500/10 text-amber-400 border border-amber-500/20"
+                        ? "bg-[var(--success-bg)] text-[var(--success-fg)] border border-[var(--success-fg)]/25"
+                        : "bg-[var(--warning-bg)] text-[var(--warning-fg)] border border-[var(--warning-fg)]/25"
                     }`}
                   >
                     {isHighConfidence ? (
@@ -202,7 +202,7 @@ export function PrescriptionReviewClient({
                 <button
                   type="button"
                   onClick={() => deleteMedicineRow(index)}
-                  className="rounded-lg p-1.5 text-slate-500 hover:bg-red-950/30 hover:text-red-400 transition"
+                  className="rounded-lg p-1.5 text-[var(--text-muted)] hover:bg-[var(--danger-bg)] hover:text-[var(--danger-fg)] transition"
                   title="Remove medication"
                 >
                   <Trash2 className="h-4 w-4" />
@@ -213,7 +213,7 @@ export function PrescriptionReviewClient({
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {/* Medicine Name */}
                 <div className="space-y-1.5 sm:col-span-2 lg:col-span-1">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  <label className="text-[10px] font-mono font-medium uppercase tracking-wider text-[var(--text-muted)]">
                     Medicine Name *
                   </label>
                   <input
@@ -221,13 +221,13 @@ export function PrescriptionReviewClient({
                     value={med.medicineName}
                     onChange={(e) => handleInputChange(index, "medicineName", e.target.value)}
                     placeholder="e.g. Amoxicillin"
-                    className="w-full rounded-xl bg-slate-900 border border-slate-800 px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition"
+                    className="w-full rounded-xl bg-[var(--bg-surface)] border border-[var(--border-default)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition"
                   />
                 </div>
 
                 {/* Dosage */}
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  <label className="text-[10px] font-mono font-medium uppercase tracking-wider text-[var(--text-muted)]">
                     Dosage *
                   </label>
                   <input
@@ -235,13 +235,13 @@ export function PrescriptionReviewClient({
                     value={med.dosage}
                     onChange={(e) => handleInputChange(index, "dosage", e.target.value)}
                     placeholder="e.g. 500mg, 1 tablet"
-                    className="w-full rounded-xl bg-slate-900 border border-slate-800 px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition"
+                    className="w-full rounded-xl bg-[var(--bg-surface)] border border-[var(--border-default)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition"
                   />
                 </div>
 
                 {/* Frequency */}
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  <label className="text-[10px] font-mono font-medium uppercase tracking-wider text-[var(--text-muted)]">
                     Frequency / Interval *
                   </label>
                   <input
@@ -249,19 +249,19 @@ export function PrescriptionReviewClient({
                     value={med.frequency}
                     onChange={(e) => handleInputChange(index, "frequency", e.target.value)}
                     placeholder="e.g. twice daily, every 8 hours"
-                    className="w-full rounded-xl bg-slate-900 border border-slate-800 px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition"
+                    className="w-full rounded-xl bg-[var(--bg-surface)] border border-[var(--border-default)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition"
                   />
                 </div>
 
                 {/* Route of Administration */}
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  <label className="text-[10px] font-mono font-medium uppercase tracking-wider text-[var(--text-muted)]">
                     Administration Route
                   </label>
                   <select
                     value={med.route}
                     onChange={(e) => handleInputChange(index, "route", e.target.value)}
-                    className="w-full rounded-xl bg-slate-900 border border-slate-800 px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition"
+                    className="w-full rounded-xl bg-[var(--bg-surface)] border border-[var(--border-default)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition"
                   >
                     <option value="ORAL">Oral</option>
                     <option value="INJECTION">Injection</option>
@@ -274,7 +274,7 @@ export function PrescriptionReviewClient({
 
                 {/* Duration */}
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  <label className="text-[10px] font-mono font-medium uppercase tracking-wider text-[var(--text-muted)]">
                     Treatment Duration
                   </label>
                   <input
@@ -282,13 +282,13 @@ export function PrescriptionReviewClient({
                     value={med.duration}
                     onChange={(e) => handleInputChange(index, "duration", e.target.value)}
                     placeholder="e.g. 7 days, ongoing"
-                    className="w-full rounded-xl bg-slate-900 border border-slate-800 px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition"
+                    className="w-full rounded-xl bg-[var(--bg-surface)] border border-[var(--border-default)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition"
                   />
                 </div>
 
                 {/* Instructions */}
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  <label className="text-[10px] font-mono font-medium uppercase tracking-wider text-[var(--text-muted)]">
                     Food & Bedtime Instructions
                   </label>
                   <input
@@ -296,7 +296,7 @@ export function PrescriptionReviewClient({
                     value={med.instructions}
                     onChange={(e) => handleInputChange(index, "instructions", e.target.value)}
                     placeholder="e.g. after breakfast, before sleeping"
-                    className="w-full rounded-xl bg-slate-900 border border-slate-800 px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition"
+                    className="w-full rounded-xl bg-[var(--bg-surface)] border border-[var(--border-default)] px-3.5 py-2.5 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition"
                   />
                 </div>
               </div>
@@ -306,13 +306,13 @@ export function PrescriptionReviewClient({
       </div>
 
       {/* Actions */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-800/80">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-[var(--border-default)]">
         <button
           type="button"
           onClick={addMedicineRow}
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-slate-800 bg-slate-900/60 hover:bg-slate-900 hover:border-slate-700 px-4 py-2.5 text-xs font-bold text-slate-200 transition"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--border-default)] bg-[var(--bg-surface-alt)] hover:bg-[var(--bg-surface)] hover:border-[var(--border-strong)] px-4 py-2.5 text-xs font-semibold text-[var(--text-primary)] transition"
         >
-          <Plus className="h-4 w-4 text-teal-400" />
+          <Plus className="h-4 w-4 text-[var(--accent)]" />
           <span>Add Another Medication</span>
         </button>
 
@@ -320,7 +320,7 @@ export function PrescriptionReviewClient({
           type="button"
           onClick={handleConfirmReview}
           disabled={isPending || medicines.length === 0}
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-400 to-teal-500 hover:from-teal-300 hover:to-teal-400 disabled:opacity-50 text-slate-950 font-bold px-6 py-2.5 text-xs transition shadow-lg shadow-teal-500/20 hover:-translate-y-0.5"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-hover)] disabled:opacity-50 text-[var(--ink-0)] font-semibold px-6 py-2.5 text-xs transition shadow-sm hover:-translate-y-0.5"
         >
           {isPending ? (
             <Loader2 className="h-4 w-4 animate-spin" />

@@ -165,37 +165,37 @@ export function UploadQuickAction() {
   };
 
   return (
-    <div className="rounded-3xl border border-slate-800/80 bg-slate-900/40 p-6 space-y-5 backdrop-blur-xl shadow-xl hover:border-slate-700/80 transition-all">
+    <div className="rounded-3xl border border-[var(--border-default)] bg-[var(--bg-surface)] p-6 space-y-5 backdrop-blur-xl shadow-xl hover:border-[var(--border-strong)] transition-all">
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h3 className="text-base font-bold text-white tracking-tight">Upload Prescription</h3>
-            <span className="rounded-full bg-teal-500/10 border border-teal-500/20 px-2 py-0.5 text-[9px] font-bold text-teal-400 uppercase tracking-wider">
+            <h3 className="text-base font-bold text-[var(--text-primary)] tracking-tight">Upload Prescription</h3>
+            <span className="rounded-full bg-[var(--accent-bg)] border border-[var(--accent)]/30 px-2 py-0.5 text-[9px] font-bold text-[var(--accent-text)] uppercase tracking-wider">
               Secure Ingestion
             </span>
           </div>
-          <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+          <p className="text-xs text-[var(--text-secondary)] mt-1 leading-relaxed">
             Upload doctor notes, scans, or digital reports for automated OCR extraction.
           </p>
         </div>
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-teal-500/10 text-teal-400 border border-teal-500/20 shadow-inner">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[var(--accent-bg)] text-[var(--accent)] border border-[var(--accent)]/25 shadow-inner">
           <UploadCloud className="h-5 w-5" />
         </div>
       </div>
 
       {/* Error block */}
       {status === "error" && errorMsg && (
-        <div className="flex items-start gap-3 rounded-2xl border border-red-500/30 bg-red-950/20 p-4 text-xs text-red-300">
-          <AlertCircle className="h-4 w-4 shrink-0 text-red-400 mt-0.5" />
+        <div className="flex items-start gap-3 rounded-2xl border border-[var(--danger-fg)]/30 bg-[var(--danger-bg)] p-4 text-xs text-[var(--danger-fg)]">
+          <AlertCircle className="h-4 w-4 shrink-0 text-[var(--danger-fg)] mt-0.5" />
           <div className="flex-1">
-            <p className="font-bold text-red-200">Upload Issue Encountered</p>
-            <p className="mt-1 leading-relaxed text-red-300/90">{errorMsg}</p>
+            <p className="font-bold">Upload Issue Encountered</p>
+            <p className="mt-1 leading-relaxed opacity-90">{errorMsg}</p>
             {file && (
               <button
                 type="button"
                 onClick={uploadFile}
-                className="mt-2.5 inline-flex items-center gap-1.5 text-xs font-bold text-teal-400 hover:text-teal-300 transition"
+                className="mt-2.5 inline-flex items-center gap-1.5 text-xs font-bold text-[var(--accent)] hover:text-[var(--accent-hover)] transition"
               >
                 <RefreshCw className="h-3.5 w-3.5" /> Retry Ingestion
               </button>
@@ -206,14 +206,14 @@ export function UploadQuickAction() {
 
       {/* Success block */}
       {status === "success" && createdId && (
-        <div className="space-y-4 rounded-2xl border border-teal-500/30 bg-teal-950/20 p-5">
+        <div className="space-y-4 rounded-2xl border border-[var(--success-fg)]/30 bg-[var(--success-bg)] p-5">
           <div className="flex items-start gap-3">
-            <div className="h-8 w-8 rounded-xl bg-teal-500/20 flex items-center justify-center text-teal-400 shrink-0 border border-teal-500/30">
+            <div className="h-8 w-8 rounded-xl bg-[var(--success-fg)]/20 flex items-center justify-center text-[var(--success-fg)] shrink-0 border border-[var(--success-fg)]/30">
               <CheckCircle2 className="h-5 w-5 stroke-[2.5]" />
             </div>
             <div>
-              <p className="font-bold text-sm text-teal-300">Prescription Ingested Successfully</p>
-              <p className="mt-1 text-xs text-slate-400 leading-relaxed">
+              <p className="font-bold text-sm text-[var(--success-fg)]">Prescription Ingested Successfully</p>
+              <p className="mt-1 text-xs text-[var(--text-secondary)] leading-relaxed">
                 Medical document encrypted, quarantined in private vault, and ready for OCR verification.
               </p>
             </div>
@@ -221,14 +221,14 @@ export function UploadQuickAction() {
           <div className="flex flex-col sm:flex-row gap-2.5 pt-2">
             <button
               onClick={() => router.push(`/dashboard/prescriptions/${createdId}`)}
-              className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-400 to-teal-500 hover:from-teal-300 hover:to-teal-400 text-slate-950 text-xs font-bold py-2.5 px-4 transition shadow-lg shadow-teal-500/20"
+              className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--ink-0)] text-xs font-bold py-2.5 px-4 transition shadow-lg shadow-[var(--accent)]/20"
             >
               <span>Review AI Extraction</span>
               <ArrowRight className="h-3.5 w-3.5 stroke-[2.5]" />
             </button>
             <button
               onClick={clearSelection}
-              className="rounded-xl border border-slate-800 bg-slate-900/80 hover:bg-slate-800 text-slate-300 text-xs font-semibold py-2.5 px-4 transition"
+              className="rounded-xl border border-[var(--border-default)] bg-[var(--bg-surface-alt)] hover:bg-[var(--bg-surface)] text-[var(--text-primary)] text-xs font-semibold py-2.5 px-4 transition"
             >
               Upload Another
             </button>
@@ -238,23 +238,23 @@ export function UploadQuickAction() {
 
       {/* Upload progress indicator */}
       {status === "uploading" && (
-        <div className="space-y-3 rounded-2xl border border-teal-500/30 bg-slate-950/60 p-4">
+        <div className="space-y-3 rounded-2xl border border-[var(--border-default)] bg-[var(--bg-surface-alt)] p-4">
           <div className="flex items-center justify-between text-xs">
-            <span className="font-medium text-slate-200 truncate max-w-[180px]">{file?.name}</span>
-            <span className="font-mono font-bold text-teal-400">{progress}%</span>
+            <span className="font-medium text-[var(--text-primary)] truncate max-w-[180px]">{file?.name}</span>
+            <span className="font-mono font-bold text-[var(--accent)]">{progress}%</span>
           </div>
-          <div className="h-2 w-full rounded-full bg-slate-800 overflow-hidden">
+          <div className="h-2 w-full rounded-full bg-[var(--border-default)] overflow-hidden">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-teal-400 to-blue-500 transition-all duration-150 shadow-[0_0_12px_#2dd4bf]"
+              className="h-full rounded-full bg-[var(--accent)] transition-all duration-150"
               style={{ width: `${progress}%` }}
             />
           </div>
           <div className="flex items-center justify-between pt-1 text-[11px]">
-            <span className="text-slate-500">Encrypting & streaming file...</span>
+            <span className="text-[var(--text-muted)]">Encrypting & streaming file...</span>
             <button
               type="button"
               onClick={cancelUpload}
-              className="text-red-400 hover:text-red-300 font-medium transition"
+              className="text-[var(--danger-fg)] hover:underline font-medium transition"
             >
               Cancel
             </button>
@@ -264,14 +264,14 @@ export function UploadQuickAction() {
 
       {/* Cancelled state block */}
       {status === "cancelled" && (
-        <div className="flex items-start gap-3 rounded-2xl border border-slate-800 bg-slate-950/40 p-4 text-xs text-slate-400">
-          <AlertCircle className="h-4 w-4 shrink-0 text-slate-500 mt-0.5" />
+        <div className="flex items-start gap-3 rounded-2xl border border-[var(--border-default)] bg-[var(--bg-surface-alt)] p-4 text-xs text-[var(--text-secondary)]">
+          <AlertCircle className="h-4 w-4 shrink-0 text-[var(--text-muted)] mt-0.5" />
           <div className="flex-1">
-            <p className="font-semibold text-slate-300">Upload Cancelled</p>
+            <p className="font-semibold text-[var(--text-primary)]">Upload Cancelled</p>
             <button
               type="button"
               onClick={uploadFile}
-              className="mt-2 inline-flex items-center gap-1.5 text-teal-400 hover:text-teal-300 font-bold"
+              className="mt-2 inline-flex items-center gap-1.5 text-[var(--accent)] hover:text-[var(--accent-hover)] font-bold"
             >
               <RefreshCw className="h-3 w-3" /> Resume Ingestion
             </button>
@@ -284,30 +284,30 @@ export function UploadQuickAction() {
         <div className="space-y-4">
           {file ? (
             /* Selected File Preview Box */
-            <div className="relative rounded-2xl border border-slate-700/80 bg-slate-950/60 p-4 flex items-center justify-between gap-4 shadow-md">
+            <div className="relative rounded-2xl border border-[var(--border-default)] bg-[var(--bg-surface-alt)] p-4 flex items-center justify-between gap-4 shadow-md">
               <div className="flex items-center gap-3.5 overflow-hidden">
                 {previewUrl ? (
-                  <div className="relative h-14 w-14 rounded-xl overflow-hidden border border-slate-800 shrink-0 bg-slate-900">
+                  <div className="relative h-14 w-14 rounded-xl overflow-hidden border border-[var(--border-default)] shrink-0 bg-[var(--bg-surface)]">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={previewUrl}
                       alt="prescription preview"
                       className="h-full w-full object-cover"
                     />
-                    <div className="absolute bottom-0 inset-x-0 bg-slate-950/80 text-[8px] font-bold text-center text-teal-400 uppercase py-0.5">
+                    <div className="absolute bottom-0 inset-x-0 bg-black/70 text-[8px] font-bold text-center text-[var(--accent)] uppercase py-0.5">
                       IMG
                     </div>
                   </div>
                 ) : (
-                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-slate-900 border border-slate-800 text-teal-400 shrink-0 shadow-inner">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[var(--bg-surface)] border border-[var(--border-default)] text-[var(--accent)] shrink-0 shadow-inner">
                     <FileText className="h-6 w-6 stroke-[2]" />
                   </div>
                 )}
                 <div className="overflow-hidden">
-                  <p className="text-xs font-bold text-white truncate max-w-[200px] sm:max-w-[260px]">
+                  <p className="text-xs font-bold text-[var(--text-primary)] truncate max-w-[200px] sm:max-w-[260px]">
                     {file.name}
                   </p>
-                  <p className="text-[11px] text-slate-400 mt-0.5 font-mono">
+                  <p className="text-[11px] text-[var(--text-muted)] mt-0.5 font-mono">
                     {(file.size / 1024 / 1024).toFixed(2)} MB &bull; {file.type.split("/")[1]?.toUpperCase() ?? "DOC"}
                   </p>
                 </div>
@@ -316,7 +316,7 @@ export function UploadQuickAction() {
               <button
                 type="button"
                 onClick={clearSelection}
-                className="rounded-xl p-2 text-slate-400 hover:bg-slate-800 hover:text-white border border-transparent hover:border-slate-700 transition shrink-0"
+                className="rounded-xl p-2 text-[var(--text-muted)] hover:bg-[var(--bg-surface)] hover:text-[var(--text-primary)] border border-transparent hover:border-[var(--border-default)] transition shrink-0"
                 title="Remove file"
               >
                 <X className="h-4 w-4" />
@@ -330,8 +330,8 @@ export function UploadQuickAction() {
               onDrop={onDrop}
               className={`flex flex-col items-center justify-center rounded-2xl border-2 border-dashed py-8 px-4 text-center cursor-pointer transition-all duration-200 ${
                 isDragging
-                  ? "border-teal-400 bg-teal-500/10 scale-[1.01]"
-                  : "border-slate-800 bg-slate-950/40 hover:border-slate-700 hover:bg-slate-900/30"
+                  ? "border-[var(--accent)] bg-[var(--accent-bg)] scale-[1.01]"
+                  : "border-[var(--border-default)] bg-[var(--bg-surface-alt)]/50 hover:border-[var(--border-strong)] hover:bg-[var(--bg-surface-alt)]"
               }`}
             >
               <input
@@ -341,18 +341,18 @@ export function UploadQuickAction() {
                 onChange={onFileSelect}
                 className="hidden"
               />
-              <div className="h-12 w-12 rounded-2xl bg-teal-500/10 flex items-center justify-center text-teal-400 mb-3 border border-teal-500/20">
+              <div className="h-12 w-12 rounded-2xl bg-[var(--accent-bg)] flex items-center justify-center text-[var(--accent)] mb-3 border border-[var(--accent)]/25">
                 <UploadCloud className="h-6 w-6" />
               </div>
-              <p className="text-xs sm:text-sm font-bold text-slate-200">
+              <p className="text-xs sm:text-sm font-bold text-[var(--text-primary)]">
                 Select prescription file or drag & drop
               </p>
-              <p className="text-[11px] text-slate-400 mt-1 max-w-xs">
+              <p className="text-[11px] text-[var(--text-muted)] mt-1 max-w-xs">
                 Supports clinical images & documents (PDF, JPG, PNG, WEBP up to 10MB)
               </p>
 
-              <div className="flex items-center gap-2 mt-4 text-[10px] text-slate-400 font-medium">
-                <ShieldCheck className="h-3.5 w-3.5 text-teal-400" />
+              <div className="flex items-center gap-2 mt-4 text-[10px] text-[var(--text-muted)] font-medium">
+                <ShieldCheck className="h-3.5 w-3.5 text-[var(--accent)]" />
                 <span>AES-256 Storage &bull; Strict Access Control</span>
               </div>
             </label>
@@ -362,7 +362,7 @@ export function UploadQuickAction() {
             <button
               type="button"
               onClick={uploadFile}
-              className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-400 to-teal-500 hover:from-teal-300 hover:to-teal-400 text-slate-950 text-xs font-bold py-3 transition shadow-lg shadow-teal-500/20 hover:-translate-y-0.5"
+              className="w-full flex items-center justify-center gap-2 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--ink-0)] text-xs font-bold py-3 transition shadow-lg shadow-[var(--accent)]/20 hover:-translate-y-0.5"
             >
               <UploadCloud className="h-4 w-4 stroke-[2.5]" />
               <span>Securely Ingest Prescription</span>

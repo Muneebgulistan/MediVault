@@ -32,14 +32,14 @@ export default async function RemindersPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">Medication Reminders</h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <h1 className="text-2xl font-bold tracking-tight text-[var(--text-primary)]">Medication Reminders</h1>
+          <p className="text-sm text-[var(--text-secondary)] mt-1">
             Automated alerts synchronized with your active prescription schedules.
           </p>
         </div>
-        <div className="flex items-center gap-2 rounded-full border border-teal-500/20 bg-teal-500/5 px-3 py-1.5">
-          <span className="h-2 w-2 rounded-full bg-teal-400 animate-pulse" />
-          <span className="text-xs font-semibold text-teal-400">Scheduler Daemon Active</span>
+        <div className="flex items-center gap-2 rounded-full border border-[var(--border-default)] bg-[var(--bg-surface-alt)] px-3 py-1.5 font-mono">
+          <span className="h-2 w-2 rounded-full bg-[var(--accent)] animate-pulse" />
+          <span className="text-xs font-medium text-[var(--text-secondary)]">Scheduler Daemon Active</span>
         </div>
       </div>
 
@@ -52,7 +52,7 @@ export default async function RemindersPage() {
             action={
               <Link
                 href="/dashboard/schedule"
-                className="inline-flex items-center gap-1.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-semibold px-4 py-2.5 text-xs transition shadow-lg shadow-teal-500/10"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--ink-0)] font-semibold px-4 py-2.5 text-xs transition shadow-sm"
               >
                 Go to Schedule Timetable
               </Link>
@@ -60,19 +60,19 @@ export default async function RemindersPage() {
           />
         </div>
       ) : (
-        <div className="rounded-2xl border border-slate-800/80 bg-slate-900/40 p-6 backdrop-blur-xl shadow-xl space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-800/80 pb-4">
+        <div className="rounded-2xl border border-[var(--border-default)] bg-[var(--bg-surface)] p-6 shadow-sm space-y-4">
+          <div className="flex items-center justify-between border-b border-[var(--border-default)] pb-4">
             <div>
-              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-200">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-[var(--text-primary)]">
                 Active Dose Notifications
               </h3>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs text-[var(--text-muted)] mt-0.5">
                 {activeSchedules.length} daily {activeSchedules.length === 1 ? "trigger" : "triggers"} currently active
               </p>
             </div>
             <Link
               href="/dashboard/schedule"
-              className="text-xs font-semibold text-teal-400 hover:text-teal-300 transition-colors"
+              className="text-xs font-semibold text-[var(--accent)] hover:text-[var(--accent-hover)] transition-colors"
             >
               Adjust Times →
             </Link>
@@ -82,28 +82,28 @@ export default async function RemindersPage() {
             {activeSchedules.map((sched) => (
               <div
                 key={sched.id}
-                className="flex items-center justify-between border border-slate-800/80 bg-slate-950/60 rounded-xl p-4 transition-all hover:border-teal-500/30 hover:bg-slate-950/80 shadow-inner group"
+                className="flex items-center justify-between border border-[var(--border-default)] bg-[var(--bg-surface-alt)] rounded-xl p-4 transition-all hover:border-[var(--border-strong)] shadow-sm group"
               >
                 <div className="flex items-center gap-3.5 min-w-0">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-teal-500/10 text-teal-400 border border-teal-500/20 group-hover:scale-105 transition-transform">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--bg-surface)] text-[var(--accent)] border border-[var(--border-default)] group-hover:border-[var(--border-strong)] transition-colors">
                     <Bell className="h-5 w-5" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-sm font-semibold text-slate-100 truncate">
+                    <p className="text-sm font-semibold text-[var(--text-primary)] truncate">
                       {sched.medicine.name}
                     </p>
-                    <p className="text-xs text-slate-400 mt-0.5 flex items-center gap-1.5">
-                      <span className="font-mono text-teal-400 font-semibold">{sched.scheduledTime}</span>
-                      <span className="text-slate-600">•</span>
+                    <p className="text-xs text-[var(--text-secondary)] mt-0.5 flex items-center gap-1.5">
+                      <span className="font-mono text-[var(--accent)] font-semibold">{sched.scheduledTime}</span>
+                      <span className="text-[var(--text-muted)]">•</span>
                       <span>Daily Dose</span>
                     </p>
                   </div>
                 </div>
                 <div className="flex flex-col items-end gap-1 shrink-0 ml-3">
-                  <span className="rounded-full bg-emerald-500/10 border border-emerald-500/25 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">
+                  <span className="rounded-full bg-[var(--success-bg)] border border-[var(--success-fg)]/25 px-2 py-0.5 text-[10px] font-mono font-medium text-[var(--success-fg)]">
                     Armed
                   </span>
-                  <span className="text-[10px] text-slate-500 font-medium">In-App Alert</span>
+                  <span className="text-[10px] text-[var(--text-muted)] font-mono font-medium">In-App Alert</span>
                 </div>
               </div>
             ))}

@@ -15,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body className="font-sans bg-slate-950 text-slate-100 antialiased">
+      <body className="font-sans bg-[var(--bg-page)] text-[var(--text-primary)] antialiased min-h-screen">
         <AuthSessionProvider>{children}</AuthSessionProvider>
       </body>
     </html>

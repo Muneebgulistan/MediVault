@@ -12,7 +12,7 @@ export function SignOutButton({ className }: SignOutButtonProps) {
       onClick={() => signOut({ callbackUrl: "/" })}
       className={
         className ??
-        "rounded-lg border border-slate-700 px-4 py-2 text-sm font-medium text-slate-300 transition hover:border-slate-500 hover:text-white"
+        "rounded-lg border border-[var(--border-default)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] transition hover:border-[var(--border-strong)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-alt)]"
       }
     >
       Sign out

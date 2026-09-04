@@ -92,16 +92,16 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-8">
       {/* 1. Clinical Welcome Banner */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between rounded-3xl border border-slate-800/80 bg-gradient-to-r from-slate-900/60 via-slate-900/30 to-teal-950/20 p-6 sm:p-8 backdrop-blur-xl shadow-xl">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between rounded-3xl border border-[var(--border-default)] bg-[var(--bg-surface)] p-6 sm:p-8 backdrop-blur-xl shadow-xl">
         <div className="space-y-1">
-          <div className="flex items-center gap-2 text-xs font-semibold text-teal-400">
+          <div className="flex items-center gap-2 text-xs font-semibold text-[var(--accent)]">
             <Sparkles className="h-4 w-4" />
             <span>CLINICAL OVERVIEW &bull; {formattedToday}</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[var(--text-primary)]">
             Welcome back, {userName}
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 max-w-xl leading-relaxed">
+          <p className="text-xs sm:text-sm text-[var(--text-secondary)] max-w-xl leading-relaxed">
             Your active prescriptions, openFDA verified medication schedules, and upcoming daily doses are synchronized.
           </p>
         </div>
@@ -109,7 +109,7 @@ export default async function DashboardPage() {
         <div className="flex items-center gap-2 self-start sm:self-center">
           <Link
             href="/dashboard/schedule"
-            className="inline-flex items-center gap-2 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 text-xs font-bold px-4 py-2.5 transition shadow-lg shadow-teal-500/20"
+            className="inline-flex items-center gap-2 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--ink-0)] text-xs font-bold px-4 py-2.5 transition shadow-lg shadow-[var(--accent)]/20"
           >
             <Calendar className="h-4 w-4" />
             <span>Today&apos;s Schedule</span>
@@ -120,47 +120,44 @@ export default async function DashboardPage() {
       {/* 2. Elevated Stat Cards */}
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
         {/* Card 1: Prescriptions */}
-        <div className="relative overflow-hidden rounded-3xl border border-slate-800/80 bg-slate-900/40 p-6 backdrop-blur-xl shadow-lg hover:border-teal-500/30 transition-all group">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-teal-500/5 rounded-full blur-2xl pointer-events-none" />
+        <div className="relative overflow-hidden rounded-3xl border border-[var(--border-default)] bg-[var(--bg-surface)] p-6 backdrop-blur-xl shadow-lg hover:border-[var(--border-strong)] transition-all group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-400">Total Prescriptions</span>
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-teal-500/10 text-teal-400 border border-teal-500/20 shadow-inner group-hover:scale-105 transition-transform">
+            <span className="text-xs font-semibold text-[var(--text-secondary)]">Total Prescriptions</span>
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--accent-bg)] text-[var(--accent)] border border-[var(--accent)]/25 shadow-inner group-hover:scale-105 transition-transform">
               <FileText className="h-5 w-5" />
             </div>
           </div>
           <div className="mt-4">
-            <p className="text-3xl font-extrabold text-white tracking-tight">{prescriptionCount}</p>
-            <p className="text-[11px] text-teal-400/90 font-medium mt-1">Encrypted in personal vault</p>
+            <p className="text-3xl font-extrabold text-[var(--text-primary)] tracking-tight">{prescriptionCount}</p>
+            <p className="text-[11px] text-[var(--text-muted)] font-medium mt-1">Encrypted in personal vault</p>
           </div>
         </div>
 
         {/* Card 2: Active Medicines */}
-        <div className="relative overflow-hidden rounded-3xl border border-slate-800/80 bg-slate-900/40 p-6 backdrop-blur-xl shadow-lg hover:border-blue-500/30 transition-all group">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-2xl pointer-events-none" />
+        <div className="relative overflow-hidden rounded-3xl border border-[var(--border-default)] bg-[var(--bg-surface)] p-6 backdrop-blur-xl shadow-lg hover:border-[var(--border-strong)] transition-all group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-400">Active Regimens</span>
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-500/10 text-blue-400 border border-blue-500/20 shadow-inner group-hover:scale-105 transition-transform">
+            <span className="text-xs font-semibold text-[var(--text-secondary)]">Active Regimens</span>
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--accent-bg)] text-[var(--accent)] border border-[var(--accent)]/25 shadow-inner group-hover:scale-105 transition-transform">
               <Pill className="h-5 w-5" />
             </div>
           </div>
           <div className="mt-4">
-            <p className="text-3xl font-extrabold text-white tracking-tight">{activeMedicinesCount}</p>
-            <p className="text-[11px] text-blue-400/90 font-medium mt-1">Cataloged & researched</p>
+            <p className="text-3xl font-extrabold text-[var(--text-primary)] tracking-tight">{activeMedicinesCount}</p>
+            <p className="text-[11px] text-[var(--text-muted)] font-medium mt-1">Cataloged & researched</p>
           </div>
         </div>
 
         {/* Card 3: Today's Medicines */}
-        <div className="relative overflow-hidden rounded-3xl border border-slate-800/80 bg-slate-900/40 p-6 backdrop-blur-xl shadow-lg hover:border-purple-500/30 transition-all group">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full blur-2xl pointer-events-none" />
+        <div className="relative overflow-hidden rounded-3xl border border-[var(--border-default)] bg-[var(--bg-surface)] p-6 backdrop-blur-xl shadow-lg hover:border-[var(--border-strong)] transition-all group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-400">Scheduled Today</span>
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-purple-500/10 text-purple-400 border border-purple-500/20 shadow-inner group-hover:scale-105 transition-transform">
+            <span className="text-xs font-semibold text-[var(--text-secondary)]">Scheduled Today</span>
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--accent-bg)] text-[var(--accent)] border border-[var(--accent)]/25 shadow-inner group-hover:scale-105 transition-transform">
               <Clock className="h-5 w-5" />
             </div>
           </div>
           <div className="mt-4">
-            <p className="text-3xl font-extrabold text-white tracking-tight">{todayMedicinesCount}</p>
-            <p className="text-[11px] text-purple-400/90 font-medium mt-1">Daily dose occurrences</p>
+            <p className="text-3xl font-extrabold text-[var(--text-primary)] tracking-tight">{todayMedicinesCount}</p>
+            <p className="text-[11px] text-[var(--text-muted)] font-medium mt-1">Daily dose occurrences</p>
           </div>
         </div>
       </div>
@@ -170,16 +167,16 @@ export default async function DashboardPage() {
         {/* Left 2 Columns: Schedule + Recent Prescriptions */}
         <div className="space-y-8 lg:col-span-2">
           {/* Upcoming Schedule Timeline */}
-          <div className="rounded-3xl border border-slate-800/80 bg-slate-900/40 p-6 backdrop-blur-xl shadow-xl space-y-5">
-            <div className="flex items-center justify-between border-b border-slate-800/80 pb-4">
+          <div className="rounded-3xl border border-[var(--border-default)] bg-[var(--bg-surface)] p-6 backdrop-blur-xl shadow-xl space-y-5">
+            <div className="flex items-center justify-between border-b border-[var(--border-default)] pb-4">
               <div className="flex items-center gap-2.5">
-                <div className="h-2 w-2 rounded-full bg-teal-400 animate-pulse" />
-                <h2 className="text-base font-bold text-white tracking-tight">Today&apos;s Timetable</h2>
+                <div className="h-2 w-2 rounded-full bg-[var(--accent)] animate-pulse" />
+                <h2 className="text-base font-bold text-[var(--text-primary)] tracking-tight">Today&apos;s Timetable</h2>
               </div>
               {upcomingMedicines.length > 0 && (
                 <Link
                   href="/dashboard/schedule"
-                  className="flex items-center gap-1.5 text-xs text-teal-400 hover:text-teal-300 font-semibold transition"
+                  className="flex items-center gap-1.5 text-xs text-[var(--accent)] hover:text-[var(--accent-hover)] font-semibold transition"
                 >
                   <span>Full Calendar</span>
                   <ArrowRight className="h-3.5 w-3.5" />
@@ -195,7 +192,7 @@ export default async function DashboardPage() {
                 action={
                   <Link
                     href="/dashboard/schedule"
-                    className="inline-flex items-center gap-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2.5 text-xs font-bold border border-slate-700 transition"
+                    className="inline-flex items-center gap-2 rounded-xl bg-[var(--bg-surface-alt)] hover:bg-[var(--bg-surface)] text-[var(--text-primary)] px-4 py-2.5 text-xs font-bold border border-[var(--border-default)] transition"
                   >
                     Manage Regimens
                   </Link>
@@ -206,26 +203,26 @@ export default async function DashboardPage() {
                 {upcomingMedicines.map((sched) => (
                   <div
                     key={sched.id}
-                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-slate-800/60 bg-slate-950/60 p-4 transition hover:border-slate-700"
+                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-[var(--border-default)] bg-[var(--bg-surface-alt)] p-4 transition hover:border-[var(--border-strong)]"
                   >
                     <div className="flex items-center gap-3.5">
-                      <div className="flex h-12 w-14 flex-col items-center justify-center rounded-xl bg-slate-900 border border-slate-800 text-teal-400 font-mono font-bold text-xs shrink-0 shadow-inner">
-                        <Clock className="h-3.5 w-3.5 mb-0.5 text-teal-400" />
+                      <div className="flex h-12 w-14 flex-col items-center justify-center rounded-xl bg-[var(--bg-surface)] border border-[var(--border-default)] text-[var(--accent)] font-mono font-bold text-xs shrink-0 shadow-inner">
+                        <Clock className="h-3.5 w-3.5 mb-0.5" />
                         <span>{sched.scheduledTime}</span>
                       </div>
                       <div className="min-w-0">
-                        <p className="font-bold text-white text-sm truncate">
+                        <p className="font-bold text-[var(--text-primary)] text-sm truncate">
                           {sched.medicine.name}
                         </p>
-                        <p className="text-xs text-slate-400 mt-0.5">
-                          <span className="font-medium text-slate-300">{sched.dosage}</span>
+                        <p className="text-xs text-[var(--text-muted)] mt-0.5">
+                          <span className="font-medium text-[var(--text-secondary)]">{sched.dosage}</span>
                           {sched.instructions && ` &bull; ${sched.instructions}`}
                         </p>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-2 self-end sm:self-center">
-                      <span className="rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                      <span className="rounded-full bg-[var(--accent-bg)] text-[var(--accent-text)] border border-[var(--accent)]/20 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">
                         Active Regimen
                       </span>
                     </div>
@@ -236,16 +233,16 @@ export default async function DashboardPage() {
           </div>
 
           {/* Recent Prescriptions */}
-          <div className="rounded-3xl border border-slate-800/80 bg-slate-900/40 p-6 backdrop-blur-xl shadow-xl space-y-5">
-            <div className="flex items-center justify-between border-b border-slate-800/80 pb-4">
+          <div className="rounded-3xl border border-[var(--border-default)] bg-[var(--bg-surface)] p-6 backdrop-blur-xl shadow-xl space-y-5">
+            <div className="flex items-center justify-between border-b border-[var(--border-default)] pb-4">
               <div className="flex items-center gap-2.5">
-                <FileText className="h-4 w-4 text-teal-400" />
-                <h2 className="text-base font-bold text-white tracking-tight">Recent Prescriptions</h2>
+                <FileText className="h-4 w-4 text-[var(--accent)]" />
+                <h2 className="text-base font-bold text-[var(--text-primary)] tracking-tight">Recent Prescriptions</h2>
               </div>
               {recentPrescriptions.length > 0 && (
                 <Link
                   href="/dashboard/prescriptions"
-                  className="flex items-center gap-1.5 text-xs text-teal-400 hover:text-teal-300 font-semibold transition"
+                  className="flex items-center gap-1.5 text-xs text-[var(--accent)] hover:text-[var(--accent-hover)] font-semibold transition"
                 >
                   <span>View All ({prescriptionCount})</span>
                   <ArrowRight className="h-3.5 w-3.5" />
@@ -265,37 +262,37 @@ export default async function DashboardPage() {
                   <Link
                     key={rx.id}
                     href={`/dashboard/prescriptions/${rx.id}`}
-                    className="group rounded-2xl border border-slate-800/80 bg-slate-950/60 p-5 hover:border-teal-500/40 transition-all flex flex-col justify-between space-y-4 hover:-translate-y-0.5 shadow-sm"
+                    className="group rounded-2xl border border-[var(--border-default)] bg-[var(--bg-surface-alt)] p-5 hover:border-[var(--accent)]/40 transition-all flex flex-col justify-between space-y-4 hover:-translate-y-0.5 shadow-sm"
                   >
                     <div>
                       <div className="flex items-start justify-between gap-2 mb-2">
-                        <h4 className="font-bold text-white text-sm group-hover:text-teal-300 transition-colors truncate">
+                        <h4 className="font-bold text-[var(--text-primary)] text-sm group-hover:text-[var(--accent)] transition-colors truncate">
                           {rx.title}
                         </h4>
                         <span
                           className={`rounded-full px-2 py-0.5 text-[9px] font-bold tracking-wider uppercase shrink-0 ${
                             rx.status === "CONFIRMED"
-                              ? "bg-teal-500/10 text-teal-400 border border-teal-500/25"
+                              ? "bg-[var(--success-bg)] text-[var(--success-fg)] border border-[var(--success-fg)]/25"
                               : rx.status === "REVIEW_REQUIRED"
-                              ? "bg-amber-500/10 text-amber-400 border border-amber-500/25"
+                              ? "bg-[var(--warning-bg)] text-[var(--warning-fg)] border border-[var(--warning-fg)]/25"
                               : rx.status === "PROCESSING"
-                              ? "bg-blue-500/10 text-blue-400 border border-blue-500/25"
-                              : "bg-slate-800 text-slate-400 border border-slate-700"
+                              ? "bg-[var(--accent-bg)] text-[var(--accent-text)] border border-[var(--accent)]/25"
+                              : "bg-[var(--bg-surface)] text-[var(--text-muted)] border border-[var(--border-default)]"
                           }`}
                         >
                           {rx.status.replace(/_/g, " ")}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-400">
+                      <p className="text-xs text-[var(--text-muted)]">
                         {rx.doctorName ? `Doctor: Dr. ${rx.doctorName}` : "Doctor unassigned"}
                       </p>
                     </div>
 
-                    <div className="flex items-center justify-between border-t border-slate-800/80 pt-3 text-[11px] text-slate-400">
+                    <div className="flex items-center justify-between border-t border-[var(--border-default)] pt-3 text-[11px] text-[var(--text-muted)]">
                       <span>
                         {rx.createdAt ? new Date(rx.createdAt).toLocaleDateString() : ""}
                       </span>
-                      <span className="flex items-center gap-1 font-semibold text-teal-400 group-hover:translate-x-0.5 transition-transform">
+                      <span className="flex items-center gap-1 font-semibold text-[var(--accent)] group-hover:translate-x-0.5 transition-transform">
                         Details <ExternalLink className="h-3 w-3" />
                       </span>
                     </div>
@@ -312,17 +309,17 @@ export default async function DashboardPage() {
           <UploadQuickAction />
 
           {/* Clinical Safety & Privacy Notice */}
-          <div className="rounded-3xl border border-slate-800/80 bg-slate-900/30 p-6 space-y-3 backdrop-blur-xl">
-            <div className="flex items-center gap-2 text-xs font-bold text-teal-400 uppercase tracking-wider">
+          <div className="rounded-3xl border border-[var(--border-default)] bg-[var(--bg-surface-alt)] p-6 space-y-3 backdrop-blur-xl">
+            <div className="flex items-center gap-2 text-xs font-bold text-[var(--warning-fg)] uppercase tracking-wider">
               <ShieldAlert className="h-4 w-4" />
               <span>Medical Safety Protocol</span>
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
               MediVault AI strictly enforces deterministic dosage scheduling. The system never invents medication dosages or frequency, and all AI-extracted records require explicit human verification before timetable generation.
             </p>
-            <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+            <div className="pt-2 border-t border-[var(--border-default)] flex items-center justify-between text-[11px] text-[var(--text-muted)]">
               <span>Patient Data Isolated</span>
-              <span className="text-teal-400 font-semibold font-mono">HIPAA Compliant Standard</span>
+              <span className="text-[var(--text-muted)] font-semibold font-mono">Strict Compliance Standard</span>
             </div>
           </div>
         </div>
